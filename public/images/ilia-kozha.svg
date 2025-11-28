@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4ede3" />
+      <stop offset="100%" stop-color="#d9c7b0" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="800" fill="url(#grad)" />
+  <circle cx="300" cy="220" r="140" fill="#c56a50" fill-opacity="0.25" />
+  <circle cx="300" cy="220" r="110" fill="#fff" fill-opacity="0.8" />
+  <text x="300" y="500" text-anchor="middle" font-family="'Outfit', Arial, sans-serif" font-size="42" fill="#2D2A26">
+    Илья Кожа
+  </text>
+  <text x="300" y="560" text-anchor="middle" font-family="'Outfit', Arial, sans-serif" font-size="22" fill="#7a6a58">
+    vibe coder
+  </text>
+</svg>

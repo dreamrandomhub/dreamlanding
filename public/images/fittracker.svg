@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520">
+  <defs>
+    <linearGradient id="grad-fit" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f2f5ed" />
+      <stop offset="100%" stop-color="#ccd7bf" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="48" fill="url(#grad-fit)" />
+  <text x="50%" y="50%" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="52" fill="#5b664d">
+    FitTracker
+  </text>
+  <text x="50%" y="70%" text-anchor="middle" font-family="'Outfit', Arial, sans-serif" font-size="26" fill="#5b664d">
+    дневник здоровья
+  </text>
+</svg>
