@@ -13,6 +13,7 @@ const projects = [
     tags: ['AI', 'Генерация', 'Дети'],
     color: '#C75B3A',
     stats: '100+ пользователей',
+    result: 'Создает персональную сказку за 5 минут',
     images: ['/images/skoro-skazka.svg'],
     link: 'https://skoroskazka.ru',
   },
@@ -35,7 +36,8 @@ const projects = [
       'Расписание, ученики, абонементы. Финансовая метрика: доход с групп, расходы на аренду и рекламу. Всё в одном месте.',
     tags: ['CRM', 'Йога', 'Финансы'],
     color: '#D4A574',
-    stats: 'MVP готов',
+    stats: 'Запущен',
+    result: 'Экономит часы на учете клиентов',
     images: ['/images/yogamanager.svg'],
   },
   {
@@ -46,16 +48,49 @@ const projects = [
       'Клиенты и объекты переплетаются. Динамика цен, карта, «заинтересованности». KPI агентства в реальном времени.',
     tags: ['CRM', 'Недвижимость', 'Аналитика'],
     color: '#7D8B9A',
-    stats: 'В разработке',
+    stats: 'Запущен',
+    result: 'Сэкономил 200к₽/год на подписках',
     images: ['/images/realty-crm.svg'],
+  },
+  {
+    id: 5,
+    title: 'Villa Landing',
+    subtitle: 'Лэндинг виллы',
+    description:
+      'Стильный одностраничник для продажи элитной недвижимости. Акцент на фото, атмосферу и быструю связь.',
+    tags: ['Landing', 'Недвижимость', 'Продажи'],
+    color: '#2C3E50',
+    stats: 'Запущен',
+    images: [],
+  },
+];
+
+const processSteps = [
+  {
+    id: 1,
+    icon: '◆',
+    title: 'Обсуждаем',
+    description: 'Простым языком, без ТЗ и корпоративных формальностей. Просто рассказываешь, что нужно.',
+  },
+  {
+    id: 2,
+    icon: '◈',
+    title: 'MVP за 3-5 дней',
+    description: 'Быстрый прототип, чтобы ты увидел идею в действии и понял, туда ли мы движемся.',
+  },
+  {
+    id: 3,
+    icon: '○',
+    title: 'Доводим до идеала',
+    description: 'Корректируем вместе, пока не получится именно то, что ты задумал. Без ограничений.',
   },
 ];
 
 const stats = [
-  { value: '1', label: 'год пути', suffix: '' },
-  { value: '120', label: 'тысяч строк кода', suffix: 'K+' },
-  { value: '0', label: 'знаний → продакшен', suffix: '' },
-  { value: '100', label: 'пользователей', suffix: '+' },
+  { value: '5', label: 'проектов запущено', suffix: '' },
+  { value: '3-5', label: 'дней на MVP', suffix: '' },
+  { value: '100', label: 'AI-Native код', suffix: '%' },
+  { value: '100', label: 'удовлетворенность', suffix: '%' },
 ];
 
 export default function LandingPage() {
@@ -67,9 +102,28 @@ export default function LandingPage() {
     const rafId = requestAnimationFrame(() => setIsLoaded(true));
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
+
+    // Intersection Observer для scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in-visible');
+        }
+      });
+    }, observerOptions);
+
+    const elements = document.querySelectorAll('.fade-in-section');
+    elements.forEach((el) => observer.observe(el));
+
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener('scroll', handleScroll);
+      elements.forEach((el) => observer.unobserve(el));
     };
   }, []);
 
@@ -91,6 +145,7 @@ export default function LandingPage() {
 
       <header style={styles.hero}>
         <nav
+          className="nav-container"
           style={{
             ...styles.nav,
             opacity: isLoaded ? 1 : 0,
@@ -98,20 +153,20 @@ export default function LandingPage() {
           }}
         >
           <div style={styles.logo}>ИК</div>
-          <div style={styles.navLinks}>
-            <a href="#manifest" style={styles.navLink}>
+          <div style={styles.navLinks} className="nav-links">
+            <a href="#manifest" style={styles.navLink} className="nav-link">
               Манифест
             </a>
-            <a href="#projects" style={styles.navLink}>
+            <a href="#projects" style={styles.navLink} className="nav-link">
               Проекты
             </a>
-            <a href="#contact" style={styles.navLink}>
+            <a href="#contact" style={styles.navLink} className="nav-link">
               Контакт
             </a>
           </div>
         </nav>
 
-        <div style={styles.heroContent}>
+        <div style={styles.heroContent} className="hero-content">
           <div
             style={{
               ...styles.heroText,
@@ -119,14 +174,15 @@ export default function LandingPage() {
               transform: isLoaded ? 'translateY(0)' : 'translateY(40px)',
               transitionDelay: '0.2s',
             }}
+            className="hero-text"
           >
             <div style={styles.heroLabel}>Вайб-код разработчик</div>
-            <h1 style={styles.heroTitle}>Илья Кожа</h1>
-            <p style={styles.heroSubtitle}>
-              Создаю приложения под себя — без корпоративного мусора, лишних фич и чужих правил. Только то, что нужно
+            <h1 style={styles.heroTitle} className="hero-title">Илья Кожа</h1>
+            <p style={styles.heroSubtitle} className="hero-subtitle">
+              Создаю приложения под тебя — без корпоративного мусора, лишних фич и чужих правил. Только то, что нужно
               именно тебе.
             </p>
-            <div style={styles.heroActions}>
+            <div style={styles.heroActions} className="hero-actions">
               <a
                 href="https://t.me/dreamrandomlab"
                 target="_blank"
@@ -149,8 +205,9 @@ export default function LandingPage() {
               transform: isLoaded ? 'scale(1)' : 'scale(0.9)',
               transitionDelay: '0.4s',
             }}
+            className="hero-image-wrapper"
           >
-            <div style={styles.heroImageFrame}>
+            <div style={styles.heroImageFrame} className="hero-image-frame">
               <Image
                 src="/images/ilia-kozha.svg"
                 alt="Илья Кожа"
@@ -178,12 +235,22 @@ export default function LandingPage() {
         </div>
       </header>
 
-      <section id="manifest" style={styles.manifestSection}>
+      <section id="manifest" style={styles.manifestSection} className="manifest-section fade-in-section">
         <div style={styles.manifestContent}>
           <div style={styles.manifestLabel}>Философия</div>
-          <h2 style={styles.manifestTitle}>«А так можно было?»</h2>
-          <div style={styles.manifestGrid}>
-            <div style={styles.manifestCard}>
+          <h2 style={styles.manifestTitle} className="manifest-title">«А так можно было?»</h2>
+          <div style={styles.manifestGrid} className="manifest-grid">
+            <div
+              style={styles.manifestCard}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.06)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.02)';
+              }}
+            >
               <div style={styles.manifestIcon}>✦</div>
               <h3 style={styles.manifestCardTitle}>Вайб-кодинг</h3>
               <p style={styles.manifestCardText}>
@@ -191,7 +258,17 @@ export default function LandingPage() {
                 без лишней сложности.
               </p>
             </div>
-            <div style={styles.manifestCard}>
+            <div
+              style={styles.manifestCard}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.06)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.02)';
+              }}
+            >
               <div style={styles.manifestIcon}>◈</div>
               <h3 style={styles.manifestCardTitle}>Индивидуальность</h3>
               <p style={styles.manifestCardText}>
@@ -199,7 +276,17 @@ export default function LandingPage() {
                 именно под твои задачи.
               </p>
             </div>
-            <div style={styles.manifestCard}>
+            <div
+              style={styles.manifestCard}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.06)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.02)';
+              }}
+            >
               <div style={styles.manifestIcon}>○</div>
               <h3 style={styles.manifestCardTitle}>Без мусора</h3>
               <p style={styles.manifestCardText}>
@@ -211,13 +298,41 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="projects" style={styles.projectsSection}>
+      <section style={styles.processSection} className="process-section fade-in-section">
+        <div style={styles.processContent}>
+          <div style={styles.sectionLabel}>Процесс</div>
+          <h2 style={styles.sectionTitle}>Как я работаю</h2>
+          <div style={styles.processGrid}>
+            {processSteps.map((step) => (
+              <div
+                key={step.id}
+                style={styles.processCard}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.06)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.02)';
+                }}
+              >
+                <div style={styles.processNumber}>{step.id}</div>
+                <div style={styles.processIcon}>{step.icon}</div>
+                <h3 style={styles.processTitle}>{step.title}</h3>
+                <p style={styles.processText}>{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" style={styles.projectsSection} className="projects-section fade-in-section">
         <div style={styles.sectionHeader}>
           <div style={styles.sectionLabel}>Портфолио</div>
           <h2 style={styles.sectionTitle}>Проекты</h2>
         </div>
 
-        <div style={styles.projectsGrid}>
+        <div style={styles.projectsGrid} className="projects-grid">
           {projects.map((project, index) => (
             <div
               key={project.id}
@@ -248,6 +363,12 @@ export default function LandingPage() {
               <h3 style={styles.projectTitle}>{project.title}</h3>
               <p style={styles.projectSubtitle}>{project.subtitle}</p>
               <p style={styles.projectDescription}>{project.description}</p>
+              {project.result && (
+                <div style={styles.projectResult}>
+                  <span style={styles.projectResultIcon}>✓</span>
+                  {project.result}
+                </div>
+              )}
               <div style={styles.projectTags}>
                 {project.tags.map((tag) => (
                   <span key={tag} style={styles.projectTag}>
@@ -260,11 +381,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={styles.statsSection}>
-        <div style={styles.statsGrid}>
+      <section style={styles.statsSection} className="stats-section fade-in-section">
+        <div style={styles.statsGrid} className="stats-grid">
           {stats.map((stat, index) => (
             <div key={index} style={styles.statItem}>
-              <div style={styles.statValue}>
+              <div style={styles.statValue} className="stat-value">
                 {stat.value}
                 <span style={styles.statSuffix}>{stat.suffix}</span>
               </div>
@@ -273,16 +394,16 @@ export default function LandingPage() {
           ))}
         </div>
         <div style={styles.statsQuote}>
-          «От нуля знаний о программировании до продакшена с реальными пользователями — за год»
+          «От твоей идеи — к точному воплощению. Никакого мусора между»
         </div>
       </section>
 
-      <section id="contact" style={styles.contactSection}>
+      <section id="contact" style={styles.contactSection} className="contact-section fade-in-section">
         <div style={styles.contactContent}>
-          <h2 style={styles.contactTitle}>
-            Давай создадим
+          <h2 style={styles.contactTitle} className="contact-title">
+            Есть идея?
             <br />
-            что-то под тебя
+            Обсудим за 15 минут
           </h2>
           <p style={styles.contactText}>
             Если у тебя есть идея приложения, которое решит именно твою проблему — напиши. Обсудим, как это можно
@@ -316,7 +437,7 @@ export default function LandingPage() {
 
       {activeProject && (
         <div style={styles.modalOverlay} onClick={() => setActiveProject(null)}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <div style={styles.modal} onClick={(e) => e.stopPropagation()} className="modal-content">
             <button style={styles.modalClose} onClick={() => setActiveProject(null)}>
               ×
             </button>
@@ -328,7 +449,7 @@ export default function LandingPage() {
             {activeProject.images.length > 0 && (
               <div style={styles.modalGallery}>
                 <div style={styles.galleryLabel}>Скриншоты</div>
-                <div style={styles.galleryGrid}>
+                <div style={styles.galleryGrid} className="gallery-grid">
                   {activeProject.images.map((img, i) => (
                     <div key={`${img}-${i}`} style={styles.galleryItem}>
                       <Image
@@ -390,31 +511,34 @@ const styles = {
   container: {
     minHeight: '100vh',
     position: 'relative',
-    background: 'linear-gradient(180deg, #FAF8F5 0%, #F5F0E8 50%, #FAF8F5 100%)',
+    background: 'linear-gradient(180deg, #F5F2EB 0%, #EBE6DE 50%, #F5F2EB 100%)',
+    overflow: 'hidden',
   },
   blob1: {
     position: 'fixed',
-    top: '10%',
-    right: '-10%',
-    width: '600px',
-    height: '600px',
-    background: 'radial-gradient(circle, rgba(199, 91, 58, 0.08) 0%, transparent 70%)',
+    top: '-10%',
+    right: '-5%',
+    width: '800px',
+    height: '800px',
+    background: 'radial-gradient(circle, rgba(199, 91, 58, 0.12) 0%, transparent 60%)',
     borderRadius: '50%',
-    filter: 'blur(60px)',
+    filter: 'blur(80px)',
     pointerEvents: 'none',
     transition: 'transform 0.3s ease-out',
+    zIndex: 0,
   },
   blob2: {
     position: 'fixed',
-    bottom: '20%',
-    left: '-15%',
-    width: '500px',
-    height: '500px',
-    background: 'radial-gradient(circle, rgba(139, 154, 125, 0.1) 0%, transparent 70%)',
+    bottom: '-10%',
+    left: '-10%',
+    width: '700px',
+    height: '700px',
+    background: 'radial-gradient(circle, rgba(139, 154, 125, 0.15) 0%, transparent 60%)',
     borderRadius: '50%',
-    filter: 'blur(60px)',
+    filter: 'blur(80px)',
     pointerEvents: 'none',
     transition: 'transform 0.3s ease-out',
+    zIndex: 0,
   },
   gridLines: {
     position: 'fixed',
@@ -423,37 +547,47 @@ const styles = {
     right: 0,
     bottom: 0,
     backgroundImage: `
-      linear-gradient(rgba(45, 42, 38, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(45, 42, 38, 0.03) 1px, transparent 1px)
+      linear-gradient(rgba(45, 42, 38, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45, 42, 38, 0.02) 1px, transparent 1px)
     `,
-    backgroundSize: '60px 60px',
+    backgroundSize: '100px 100px',
     pointerEvents: 'none',
+    zIndex: 0,
   },
   nav: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '24px 48px',
+    padding: '32px 64px',
     position: 'relative',
-    zIndex: 10,
+    zIndex: 100,
     transition: 'all 0.6s ease',
   },
   logo: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: '24px',
+    fontSize: '26px',
     fontWeight: '600',
     color: '#2D2A26',
-    width: '48px',
-    height: '48px',
+    width: '56px',
+    height: '56px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    border: '2px solid #2D2A26',
+    border: '1.5px solid rgba(45, 42, 38, 0.1)',
     borderRadius: '50%',
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.02)',
   },
   navLinks: {
     display: 'flex',
-    gap: '40px',
+    gap: '48px',
+    background: 'rgba(255, 255, 255, 0.3)',
+    padding: '12px 32px',
+    borderRadius: '100px',
+    backdropFilter: 'blur(12px)',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.02)',
   },
   navLink: {
     fontFamily: "'Outfit', sans-serif",
@@ -463,66 +597,75 @@ const styles = {
     textDecoration: 'none',
     letterSpacing: '0.5px',
     textTransform: 'uppercase',
-    transition: 'color 0.3s ease',
+    transition: 'all 0.3s ease',
     position: 'relative',
+    opacity: 0.7,
   },
   hero: {
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
+    zIndex: 1,
   },
   heroContent: {
     flex: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '0 48px 80px',
-    maxWidth: '1400px',
+    padding: '0 64px 80px',
+    maxWidth: '1440px',
     margin: '0 auto',
     width: '100%',
-    gap: '80px',
+    gap: '100px',
   },
   heroText: {
     flex: 1,
-    maxWidth: '600px',
+    maxWidth: '640px',
     transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
   },
   heroLabel: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '13px',
-    fontWeight: '500',
+    fontSize: '14px',
+    fontWeight: '600',
     color: '#C75B3A',
-    letterSpacing: '2px',
+    letterSpacing: '3px',
     textTransform: 'uppercase',
-    marginBottom: '16px',
+    marginBottom: '24px',
+    display: 'inline-block',
+    padding: '8px 16px',
+    background: 'rgba(199, 91, 58, 0.08)',
+    borderRadius: '100px',
+    border: '1px solid rgba(199, 91, 58, 0.1)',
   },
   heroTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: 'clamp(48px, 8vw, 80px)',
+    fontSize: 'clamp(56px, 8vw, 96px)',
     fontWeight: '500',
     color: '#2D2A26',
-    lineHeight: '1.1',
-    marginBottom: '24px',
+    lineHeight: '1.05',
+    marginBottom: '32px',
+    letterSpacing: '-0.02em',
   },
   heroSubtitle: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '18px',
-    fontWeight: '400',
+    fontSize: '20px',
+    fontWeight: '300',
     color: '#5C5954',
-    lineHeight: '1.7',
-    marginBottom: '40px',
+    lineHeight: '1.6',
+    marginBottom: '48px',
+    maxWidth: '540px',
   },
   heroActions: {
     display: 'flex',
-    gap: '16px',
+    gap: '20px',
     flexWrap: 'wrap',
   },
   primaryButton: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '10px',
-    padding: '16px 32px',
+    gap: '12px',
+    padding: '18px 36px',
     background: '#2D2A26',
     color: '#FAF8F5',
     fontFamily: "'Outfit', sans-serif",
@@ -530,63 +673,69 @@ const styles = {
     fontWeight: '500',
     textDecoration: 'none',
     borderRadius: '100px',
-    transition: 'all 0.3s ease',
+    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
     cursor: 'pointer',
+    boxShadow: '0 10px 30px rgba(45, 42, 38, 0.15)',
   },
   secondaryButton: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '10px',
-    padding: '16px 32px',
-    background: 'transparent',
+    gap: '12px',
+    padding: '18px 36px',
+    background: 'rgba(255, 255, 255, 0.5)',
     color: '#2D2A26',
     fontFamily: "'Outfit', sans-serif",
     fontSize: '15px',
     fontWeight: '500',
     textDecoration: 'none',
     borderRadius: '100px',
-    border: '1.5px solid #2D2A26',
+    border: '1px solid rgba(45, 42, 38, 0.1)',
     transition: 'all 0.3s ease',
     cursor: 'pointer',
+    backdropFilter: 'blur(10px)',
   },
   heroImageWrapper: {
     position: 'relative',
     transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
   },
   heroImageFrame: {
-    width: '320px',
-    height: '400px',
-    borderRadius: '200px 200px 20px 20px',
+    width: '360px',
+    height: '460px',
+    borderRadius: '240px 240px 24px 24px',
     overflow: 'hidden',
-    background: 'linear-gradient(135deg, #F0EBE3 0%, #E8E2D9 100%)',
-    boxShadow: '0 30px 80px rgba(45, 42, 38, 0.15)',
     position: 'relative',
+    boxShadow: '0 40px 100px rgba(45, 42, 38, 0.12), 0 10px 30px rgba(45, 42, 38, 0.05)',
+    border: '8px solid rgba(255, 255, 255, 0.4)',
+    backdropFilter: 'blur(20px)',
   },
   heroImage: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
     objectPosition: 'center top',
+    transition: 'transform 0.8s ease',
   },
   decorCircle: {
     position: 'absolute',
-    top: '-20px',
-    right: '-20px',
-    width: '80px',
-    height: '80px',
-    border: '2px dashed rgba(199, 91, 58, 0.4)',
+    top: '-30px',
+    right: '-30px',
+    width: '100px',
+    height: '100px',
+    border: '2px solid rgba(199, 91, 58, 0.2)',
     borderRadius: '50%',
-    animation: 'float 4s ease-in-out infinite',
+    animation: 'float 5s ease-in-out infinite',
+    zIndex: -1,
   },
   decorDots: {
     position: 'absolute',
-    bottom: '40px',
-    left: '-40px',
-    width: '100px',
-    height: '100px',
+    bottom: '60px',
+    left: '-60px',
+    width: '120px',
+    height: '120px',
     backgroundImage: 'radial-gradient(circle, #C75B3A 2px, transparent 2px)',
-    backgroundSize: '16px 16px',
-    opacity: 0.3,
+    backgroundSize: '20px 20px',
+    opacity: 0.2,
+    zIndex: -1,
   },
   scrollIndicator: {
     position: 'absolute',
@@ -596,70 +745,80 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '8px',
+    gap: '12px',
     transition: 'opacity 0.6s ease',
+    zIndex: 10,
   },
   scrollLine: {
     width: '1px',
-    height: '40px',
-    background: 'linear-gradient(180deg, transparent, #2D2A26)',
+    height: '60px',
+    background: 'linear-gradient(180deg, rgba(45, 42, 38, 0), #2D2A26)',
     animation: 'scrollDown 2s ease-in-out infinite',
   },
   scrollText: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '11px',
     color: '#8B8680',
-    letterSpacing: '2px',
+    letterSpacing: '3px',
     textTransform: 'uppercase',
+    opacity: 0.7,
   },
   manifestSection: {
-    padding: '120px 48px',
+    padding: '100px 64px',
     position: 'relative',
+    zIndex: 2,
   },
   manifestContent: {
-    maxWidth: '1200px',
+    maxWidth: '1280px',
     margin: '0 auto',
   },
   manifestLabel: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '13px',
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#C75B3A',
     letterSpacing: '2px',
     textTransform: 'uppercase',
-    marginBottom: '16px',
+    marginBottom: '20px',
+    opacity: 0.8,
   },
   manifestTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: 'clamp(36px, 5vw, 56px)',
+    fontSize: 'clamp(40px, 6vw, 64px)',
     fontWeight: '500',
     color: '#2D2A26',
-    marginBottom: '60px',
+    marginBottom: '80px',
+    maxWidth: '800px',
   },
   manifestGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '32px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+    gap: '40px',
   },
   manifestCard: {
-    padding: '40px',
-    background: 'rgba(255, 255, 255, 0.6)',
-    backdropFilter: 'blur(20px)',
-    borderRadius: '24px',
-    border: '1px solid rgba(45, 42, 38, 0.08)',
-    transition: 'all 0.3s ease',
+    padding: '48px',
+    background: 'rgba(255, 255, 255, 0.4)',
+    backdropFilter: 'blur(24px)',
+    borderRadius: '32px',
+    border: '1px solid rgba(255, 255, 255, 0.6)',
+    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.02)',
   },
   manifestIcon: {
-    fontSize: '32px',
+    fontSize: '40px',
     color: '#C75B3A',
-    marginBottom: '20px',
+    marginBottom: '24px',
+    display: 'inline-block',
+    padding: '16px',
+    background: 'rgba(199, 91, 58, 0.05)',
+    borderRadius: '20px',
   },
   manifestCardTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: '24px',
+    fontSize: '28px',
     fontWeight: '500',
     color: '#2D2A26',
-    marginBottom: '12px',
+    marginBottom: '16px',
   },
   manifestCardText: {
     fontFamily: "'Outfit', sans-serif",
@@ -667,181 +826,290 @@ const styles = {
     fontWeight: '400',
     color: '#5C5954',
     lineHeight: '1.7',
+    opacity: 0.9,
   },
   projectsSection: {
-    padding: '80px 48px 120px',
+    padding: '80px 64px 100px',
     position: 'relative',
+    zIndex: 2,
   },
   sectionHeader: {
-    maxWidth: '1200px',
-    margin: '0 auto 60px',
+    maxWidth: '1280px',
+    margin: '0 auto 80px',
   },
   sectionLabel: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '13px',
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#C75B3A',
     letterSpacing: '2px',
     textTransform: 'uppercase',
     marginBottom: '16px',
+    opacity: 0.8,
   },
   sectionTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: 'clamp(36px, 5vw, 56px)',
+    fontSize: 'clamp(40px, 6vw, 64px)',
     fontWeight: '500',
     color: '#2D2A26',
+    marginBottom: '60px',
+    maxWidth: '800px',
+  },
+  processSection: {
+    padding: '80px 64px',
+    position: 'relative',
+    zIndex: 2,
+  },
+  processContent: {
+    maxWidth: '1280px',
+    margin: '0 auto',
+  },
+  processGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '40px',
+  },
+  processCard: {
+    position: 'relative',
+    padding: '48px 40px',
+    background: 'rgba(255, 255, 255, 0.4)',
+    backdropFilter: 'blur(24px)',
+    borderRadius: '32px',
+    border: '1px solid rgba(255, 255, 255, 0.6)',
+    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.02)',
+  },
+  processNumber: {
+    position: 'absolute',
+    top: '24px',
+    right: '24px',
+    fontFamily: "'Playfair Display', serif",
+    fontSize: '64px',
+    fontWeight: '300',
+    color: 'rgba(199, 91, 58, 0.1)',
+    lineHeight: '1',
+  },
+  processIcon: {
+    fontSize: '48px',
+    marginBottom: '24px',
+    display: 'block',
+    color: '#C75B3A',
+  },
+  processTitle: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: '28px',
+    fontWeight: '500',
+    color: '#2D2A26',
+    marginBottom: '16px',
+  },
+  processText: {
+    fontFamily: "'Outfit', sans-serif",
+    fontSize: '16px',
+    fontWeight: '400',
+    color: '#5C5954',
+    lineHeight: '1.7',
+    opacity: 0.9,
   },
   projectsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-    gap: '32px',
-    maxWidth: '1200px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
+    gap: '40px',
+    maxWidth: '1280px',
     margin: '0 auto',
   },
   projectCard: {
     position: 'relative',
-    padding: '32px',
-    background: 'rgba(255, 255, 255, 0.7)',
-    backdropFilter: 'blur(20px)',
-    borderRadius: '24px',
-    border: '1px solid rgba(45, 42, 38, 0.08)',
+    padding: '40px',
+    background: 'rgba(255, 255, 255, 0.5)',
+    backdropFilter: 'blur(30px)',
+    borderRadius: '32px',
+    border: '1px solid rgba(255, 255, 255, 0.6)',
     cursor: 'pointer',
-    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-    boxShadow: '0 4px 30px rgba(45, 42, 38, 0.08)',
+    transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+    boxShadow: '0 10px 30px rgba(45, 42, 38, 0.04)',
     overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
   },
   projectAccent: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: '4px',
+    height: '6px',
+    opacity: 0.8,
   },
   projectHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '20px',
+    marginBottom: '24px',
   },
   projectStats: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '12px',
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#8B8680',
-    letterSpacing: '0.5px',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    padding: '6px 12px',
+    background: 'rgba(45, 42, 38, 0.05)',
+    borderRadius: '100px',
   },
   projectGalleryHint: {
     display: 'flex',
     alignItems: 'center',
-    gap: '4px',
+    gap: '6px',
     fontFamily: "'Outfit', sans-serif",
     fontSize: '12px',
+    fontWeight: '500',
     color: '#8B8680',
+    padding: '6px 12px',
+    background: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: '100px',
   },
   projectTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: '28px',
+    fontSize: '32px',
     fontWeight: '500',
     color: '#2D2A26',
-    marginBottom: '4px',
+    marginBottom: '8px',
   },
   projectSubtitle: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '14px',
+    fontSize: '15px',
     fontWeight: '500',
     color: '#C75B3A',
-    marginBottom: '16px',
+    marginBottom: '20px',
+    display: 'block',
   },
   projectDescription: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '15px',
+    fontSize: '16px',
     fontWeight: '400',
     color: '#5C5954',
-    lineHeight: '1.6',
+    lineHeight: '1.7',
     marginBottom: '20px',
+  },
+  projectResult: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '12px 16px',
+    background: 'rgba(139, 154, 125, 0.08)',
+    borderRadius: '12px',
+    fontFamily: "'Outfit', sans-serif",
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#5C5954',
+    marginBottom: '24px',
+    border: '1px solid rgba(139, 154, 125, 0.15)',
+  },
+  projectResultIcon: {
+    fontSize: '16px',
+    color: '#8B9A7D',
   },
   projectTags: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '8px',
+    gap: '10px',
   },
   projectTag: {
-    padding: '6px 14px',
-    background: 'rgba(45, 42, 38, 0.06)',
+    padding: '8px 16px',
+    background: 'rgba(255, 255, 255, 0.6)',
     borderRadius: '100px',
     fontFamily: "'Outfit', sans-serif",
     fontSize: '12px',
     fontWeight: '500',
     color: '#5C5954',
+    border: '1px solid rgba(45, 42, 38, 0.05)',
   },
   statsSection: {
-    padding: '80px 48px',
+    padding: '80px 64px',
     background: '#2D2A26',
     position: 'relative',
+    color: '#FAF8F5',
+    overflow: 'hidden',
   },
   statsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: '40px',
-    maxWidth: '1000px',
-    margin: '0 auto 48px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gap: '60px',
+    maxWidth: '1200px',
+    margin: '0 auto 60px',
+    position: 'relative',
+    zIndex: 2,
   },
   statItem: {
     textAlign: 'center',
   },
   statValue: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: 'clamp(48px, 8vw, 72px)',
-    fontWeight: '500',
+    fontSize: 'clamp(56px, 6vw, 80px)',
+    fontWeight: '400',
     color: '#FAF8F5',
     lineHeight: '1',
-    marginBottom: '8px',
+    marginBottom: '12px',
+    display: 'flex',
+    alignItems: 'baseline',
+    justifyContent: 'center',
+    gap: '4px',
   },
   statSuffix: {
     fontSize: '0.5em',
-    color: '#C75B3A',
+    opacity: 0.6,
+    fontFamily: "'Outfit', sans-serif",
+    fontWeight: '300',
   },
   statLabel: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '14px',
     fontWeight: '400',
     color: 'rgba(250, 248, 245, 0.6)',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
   },
   statsQuote: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: '20px',
-    fontWeight: '400',
-    fontStyle: 'italic',
-    color: 'rgba(250, 248, 245, 0.8)',
     textAlign: 'center',
-    maxWidth: '600px',
+    fontFamily: "'Playfair Display', serif",
+    fontSize: 'clamp(24px, 4vw, 32px)',
+    fontWeight: '400',
+    color: 'rgba(250, 248, 245, 0.9)',
+    maxWidth: '1200px',
     margin: '0 auto',
-    lineHeight: '1.6',
+    lineHeight: '1.4',
+    fontStyle: 'italic',
+    position: 'relative',
+    zIndex: 2,
   },
   contactSection: {
-    padding: '120px 48px',
+    padding: '100px 64px',
     position: 'relative',
+    zIndex: 2,
   },
   contactContent: {
-    maxWidth: '700px',
+    maxWidth: '800px',
     margin: '0 auto',
     textAlign: 'center',
   },
   contactTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: 'clamp(36px, 5vw, 56px)',
+    fontSize: 'clamp(48px, 6vw, 72px)',
     fontWeight: '500',
     color: '#2D2A26',
-    marginBottom: '24px',
-    lineHeight: '1.2',
+    marginBottom: '32px',
+    lineHeight: '1.1',
   },
   contactText: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '18px',
     fontWeight: '400',
     color: '#5C5954',
-    lineHeight: '1.7',
-    marginBottom: '48px',
+    lineHeight: '1.6',
+    marginBottom: '60px',
+    maxWidth: '600px',
+    margin: '0 auto 60px',
   },
   contactLinks: {
     display: 'flex',
@@ -853,35 +1121,36 @@ const styles = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '12px',
-    padding: '20px 36px',
-    background: 'rgba(255, 255, 255, 0.8)',
-    backdropFilter: 'blur(20px)',
-    borderRadius: '100px',
-    border: '1px solid rgba(45, 42, 38, 0.1)',
+    padding: '20px 40px',
+    background: '#fff',
+    color: '#2D2A26',
     fontFamily: "'Outfit', sans-serif",
     fontSize: '16px',
     fontWeight: '500',
-    color: '#2D2A26',
     textDecoration: 'none',
-    transition: 'all 0.3s ease',
+    borderRadius: '100px',
+    boxShadow: '0 20px 40px rgba(45, 42, 38, 0.08)',
+    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+    border: '1px solid rgba(45, 42, 38, 0.05)',
   },
   footer: {
-    padding: '32px 48px',
-    borderTop: '1px solid rgba(45, 42, 38, 0.1)',
+    padding: '40px 64px',
+    borderTop: '1px solid rgba(45, 42, 38, 0.06)',
+    background: '#FAF8F5',
   },
   footerContent: {
-    maxWidth: '1200px',
+    maxWidth: '1440px',
     margin: '0 auto',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: '8px',
+    gap: '16px',
     fontFamily: "'Outfit', sans-serif",
     fontSize: '14px',
     color: '#8B8680',
   },
   footerDivider: {
-    color: '#C75B3A',
+    opacity: 0.4,
   },
   modalOverlay: {
     position: 'fixed',
@@ -889,24 +1158,26 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(45, 42, 38, 0.8)',
-    backdropFilter: 'blur(8px)',
+    background: 'rgba(45, 42, 38, 0.6)',
+    backdropFilter: 'blur(12px)',
+    zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '24px',
-    zIndex: 1000,
-    animation: 'fadeIn 0.3s ease',
+    padding: '20px',
+    animation: 'fadeIn 0.3s ease-out',
   },
   modal: {
-    position: 'relative',
-    width: '100%',
-    maxWidth: '700px',
-    maxHeight: '90vh',
-    overflow: 'auto',
     background: '#FAF8F5',
     borderRadius: '32px',
     padding: '48px',
+    maxWidth: '900px',
+    width: '100%',
+    maxHeight: '90vh',
+    overflowY: 'auto',
+    position: 'relative',
+    boxShadow: '0 40px 100px rgba(0, 0, 0, 0.2)',
+    animation: 'scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
   },
   modalClose: {
     position: 'absolute',
@@ -914,11 +1185,11 @@ const styles = {
     right: '24px',
     width: '40px',
     height: '40px',
-    border: 'none',
-    background: 'rgba(45, 42, 38, 0.08)',
     borderRadius: '50%',
-    fontSize: '24px',
+    border: 'none',
+    background: 'rgba(45, 42, 38, 0.05)',
     color: '#2D2A26',
+    fontSize: '24px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
@@ -927,83 +1198,86 @@ const styles = {
   },
   modalAccent: {
     width: '60px',
-    height: '4px',
-    borderRadius: '2px',
-    marginBottom: '24px',
+    height: '6px',
+    borderRadius: '100px',
+    marginBottom: '32px',
   },
   modalTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: '36px',
+    fontSize: '40px',
     fontWeight: '500',
     color: '#2D2A26',
     marginBottom: '8px',
   },
   modalSubtitle: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '16px',
+    fontSize: '18px',
     fontWeight: '500',
     color: '#C75B3A',
-    marginBottom: '20px',
+    marginBottom: '24px',
   },
   modalDescription: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '16px',
+    fontSize: '18px',
     fontWeight: '400',
     color: '#5C5954',
     lineHeight: '1.7',
-    marginBottom: '32px',
+    marginBottom: '40px',
+    maxWidth: '700px',
   },
   modalGallery: {
-    marginBottom: '32px',
+    marginBottom: '40px',
   },
   galleryLabel: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '12px',
-    fontWeight: '500',
+    fontSize: '13px',
+    fontWeight: '600',
     color: '#8B8680',
-    letterSpacing: '1px',
     textTransform: 'uppercase',
-    marginBottom: '16px',
+    letterSpacing: '1px',
+    marginBottom: '20px',
   },
   galleryGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-    gap: '16px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '24px',
   },
   galleryItem: {
-    borderRadius: '12px',
+    borderRadius: '16px',
     overflow: 'hidden',
-    boxShadow: '0 4px 20px rgba(45, 42, 38, 0.1)',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
+    background: '#fff',
   },
   galleryImage: {
     width: '100%',
     height: 'auto',
     display: 'block',
-    transition: 'transform 0.3s ease',
   },
   modalLink: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '8px',
-    padding: '14px 28px',
-    background: '#C75B3A',
+    gap: '10px',
+    padding: '16px 32px',
+    background: '#2D2A26',
     color: '#FAF8F5',
     fontFamily: "'Outfit', sans-serif",
     fontSize: '15px',
     fontWeight: '500',
     textDecoration: 'none',
     borderRadius: '100px',
-    marginBottom: '24px',
+    marginBottom: '40px',
     transition: 'all 0.3s ease',
   },
   modalTags: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '10px',
+    gap: '12px',
+    borderTop: '1px solid rgba(45, 42, 38, 0.08)',
+    paddingTop: '32px',
   },
   modalTag: {
-    padding: '8px 18px',
-    background: 'rgba(45, 42, 38, 0.06)',
+    padding: '8px 16px',
+    background: 'rgba(45, 42, 38, 0.04)',
     borderRadius: '100px',
     fontFamily: "'Outfit', sans-serif",
     fontSize: '13px',
