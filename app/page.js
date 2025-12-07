@@ -1,7 +1,18 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useMotionValue,
+  useMotionTemplate,
+  AnimatePresence,
+} from 'framer-motion';
+
+// --- Data ---
 
 const projects = [
   {
@@ -9,59 +20,64 @@ const projects = [
     title: 'Скоро Сказка',
     subtitle: 'Генератор детских книг',
     description:
-      'Персонализированные иллюстрированные сказки за 5 минут. Имя ребёнка, любимая игрушка, еда — всё становится частью истории.',
-    tags: ['AI', 'Генерация', 'Дети'],
+      'Мой масштабный проект (100+ пользователей). В библиотеке более 100 книг, десятки сюжетов и 8 стилей иллюстраций. Персонализированные сказки за 5 минут: имя ребёнка, любимая игрушка, еда — всё становится органичной частью истории.',
+    tags: ['AI', 'B2C', 'Генерация'],
     color: '#C75B3A',
     stats: '100+ пользователей',
-    result: 'Создает персональную сказку за 5 минут',
-    images: ['/images/skoro-skazka.svg'],
+    result: '1000+ сказок создано',
+    images: ['/images/skoroskazka1.png', '/images/skoroskazka2 .png', '/images/skoroskazka3.png'],
     link: 'https://skoroskazka.ru',
   },
   {
     id: 2,
-    title: 'FitTracker',
+    title: 'Fitness Diary',
     subtitle: 'Умный дневник здоровья',
     description:
-      'Сбрось текст, фото или голосовое — ИИ сам разберёт калории. Тренировки с таймером, учёт сна с метрикой долга, динамика веса.',
-    tags: ['AI', 'Здоровье', 'Трекер'],
+      'Не просто "ввод еды": умный подсчет КБЖУ по фото/аудио/тексту, подгрузка микронутриентов. Экспорт дневника для внешней аналитики, мотивационные алгоритмы. Тренировочный модуль с таймерами и упражнениями. (Демо-доступ 3 дня, для активации напишите мне).',
+    tags: ['HealthTech', 'AI', 'Mobile Web'],
     color: '#8B9A7D',
-    stats: 'Личный проект',
-    images: ['/images/fittracker.svg'],
+    stats: 'Демо доступны',
+    result: 'Точный расчет КБЖУ',
+    images: ['/images/fitness1.png', '/images/fitness2.png', '/images/fitness3.png', '/images/fitness4.png', '/images/fitness5.png'],
+    link: 'https://ftrack-nine.vercel.app/',
   },
   {
     id: 3,
-    title: 'YogaManager',
-    subtitle: 'Для йога-преподавателей',
+    title: 'RealtyCRM',
+    subtitle: 'Для агентства недвижимости',
     description:
-      'Расписание, ученики, абонементы. Финансовая метрика: доход с групп, расходы на аренду и рекламу. Всё в одном месте.',
-    tags: ['CRM', 'Йога', 'Финансы'],
-    color: '#D4A574',
-    stats: 'Запущен',
-    result: 'Экономит часы на учете клиентов',
-    images: ['/images/yogamanager.svg'],
+      'MVP для управления связями клиент<->объект. Возможность создавать встречи, вести глубокую аналитику, выгружать PDF с презентабельной карточкой объекта по нужному шаблону.',
+    tags: ['CRM', 'B2B', 'Недвижимость'],
+    color: '#7D8B9A',
+    stats: 'MVP',
+    result: 'Автоматизация рутины',
+    images: ['/images/crm.png', '/images/crm 2.png', '/images/crm 3.png'],
+    link: 'https://cityon.vercel.app/',
   },
   {
     id: 4,
-    title: 'Realty CRM',
-    subtitle: 'Для агентства недвижимости',
-    description:
-      'Клиенты и объекты переплетаются. Динамика цен, карта, «заинтересованности». KPI агентства в реальном времени.',
-    tags: ['CRM', 'Недвижимость', 'Аналитика'],
-    color: '#7D8B9A',
-    stats: 'Запущен',
-    result: 'Сэкономил 200к₽/год на подписках',
-    images: ['/images/realty-crm.svg'],
-  },
-  {
-    id: 5,
     title: 'Villa Landing',
     subtitle: 'Лэндинг виллы',
     description:
-      'Стильный одностраничник для продажи элитной недвижимости. Акцент на фото, атмосферу и быструю связь.',
-    tags: ['Landing', 'Недвижимость', 'Продажи'],
+      'Стильный одностраничник для продажи элитной недвижимости на Самуи. Акцент на фото, атмосферу и быструю связь.',
+    tags: ['Landing', 'Design', 'Недвижимость'],
     color: '#2C3E50',
     stats: 'Запущен',
-    images: [],
+    result: 'High-end презентация',
+    images: ['/images/villa1.png', '/images/villa2.png'],
+    link: 'https://villadream-samui.vercel.app/ru',
+  },
+  {
+    id: 5,
+    title: 'Yoga App',
+    subtitle: 'Платформа для преподавателя',
+    description:
+      'Расписание, база учеников, абонементы. В финальной версии реализована самозапись учеников на урок и встроенный мини-магазин брендовой одежды и девайсов автора.',
+    tags: ['CRM', 'E-commerce', 'Booking'],
+    color: '#D4A574',
+    stats: 'Private',
+    result: 'Полная автоматизация',
+    images: ['/images/yoga 1.png', '/images/yoga2.png', '/images/yoga3.png'],
   },
 ];
 
@@ -70,19 +86,22 @@ const processSteps = [
     id: 1,
     icon: '◆',
     title: 'Обсуждаем',
-    description: 'Простым языком, без ТЗ и корпоративных формальностей. Просто рассказываешь, что нужно.',
+    description:
+      'Простым языком, без ТЗ и корпоративных формальностей. Просто рассказываешь, что нужно.',
   },
   {
     id: 2,
     icon: '◈',
     title: 'MVP за 3-5 дней',
-    description: 'Быстрый прототип, чтобы ты увидел идею в действии и понял, туда ли мы движемся.',
+    description:
+      'Быстрый прототип, чтобы ты увидел идею в действии и понял, туда ли мы движемся.',
   },
   {
     id: 3,
     icon: '○',
     title: 'Доводим до идеала',
-    description: 'Корректируем вместе, пока не получится именно то, что ты задумал. Без ограничений.',
+    description:
+      'Корректируем вместе, пока не получится именно то, что ты задумал. Без ограничений.',
   },
 ];
 
@@ -93,123 +112,330 @@ const stats = [
   { value: '100', label: 'удовлетворенность', suffix: '%' },
 ];
 
+// --- Components ---
+
+function Magnetic({ children }) {
+  const ref = useRef(null);
+  const position = { x: useMotionValue(0), y: useMotionValue(0) };
+
+  const handleMouse = (e) => {
+    const { clientX, clientY } = e;
+    const { height, width, left, top } = ref.current.getBoundingClientRect();
+    const middleX = clientX - (left + width / 2);
+    const middleY = clientY - (top + height / 2);
+    position.x.set(middleX * 0.1);
+    position.y.set(middleY * 0.1);
+  };
+
+  const reset = () => {
+    position.x.set(0);
+    position.y.set(0);
+  };
+
+  const { x, y } = position;
+  return (
+    <motion.div
+      style={{ x, y }}
+      ref={ref}
+      onMouseMove={handleMouse}
+      onMouseLeave={reset}
+      transition={{ type: 'spring', stiffness: 150, damping: 15, mass: 0.1 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const spring = {
+  type: 'spring',
+  stiffness: 300,
+  damping: 30,
+};
+
+const ProjectCard = ({ project, onClick }) => {
+  return (
+    <motion.div
+      layoutId={`card-container-${project.id}`}
+      onClick={onClick}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      transition={spring}
+      style={{
+        ...styles.projectCard,
+        position: 'relative',
+        zIndex: 1,
+      }}
+    >
+      <motion.div
+        layoutId={`card-bg-${project.id}`}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: '#fff',
+          borderRadius: '24px',
+          boxShadow: '0 4px 30px rgba(45, 42, 38, 0.08)',
+          zIndex: 0,
+        }}
+      />
+
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <motion.div
+          layoutId={`card-accent-${project.id}`}
+          style={{ ...styles.projectAccent, backgroundColor: project.color }}
+        />
+        <div style={styles.projectHeader}>
+          <motion.span layoutId={`card-stats-${project.id}`} style={styles.projectStats}>
+            {project.stats}
+          </motion.span>
+          {project.images.length > 0 && (
+            <div style={styles.projectGalleryHint}>
+              <GalleryIcon />
+              {project.images.length}
+            </div>
+          )}
+        </div>
+        <motion.h3 layoutId={`card-title-${project.id}`} style={styles.projectTitle}>
+          {project.title}
+        </motion.h3>
+        <motion.p layoutId={`card-subtitle-${project.id}`} style={styles.projectSubtitle}>
+          {project.subtitle}
+        </motion.p>
+        <motion.p
+          layoutId={`card-desc-${project.id}`}
+          style={styles.projectDescription}
+        >
+          {project.description}
+        </motion.p>
+
+        <div style={{ marginTop: 'auto' }}>
+          {project.result && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              style={styles.projectResult}
+            >
+              <span style={styles.projectResultIcon}>✓</span>
+              {project.result}
+            </motion.div>
+          )}
+          <div style={styles.projectTags}>
+            {project.tags.map((tag) => (
+              <span key={tag} style={styles.projectTag}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- Main Page ---
+
+const ProcessCard = ({ step, index, hoveredIndex, setHoveredIndex }) => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  function handleMouseMove({ currentTarget, clientX, clientY }) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  return (
+    <motion.div
+      style={styles.processCard}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setHoveredIndex(index)}
+      onMouseLeave={() => setHoveredIndex(null)}
+      animate={{
+        scale: hoveredIndex === index ? 1.02 : 1,
+        opacity: hoveredIndex !== null && hoveredIndex !== index ? 0.3 : 1,
+        borderColor: hoveredIndex === index ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
+      }}
+    >
+      <motion.div
+        style={{
+          ...styles.spotlight,
+          background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(255,255,255,0.08), transparent 80%)`,
+        }}
+      />
+
+      <div style={styles.processCardContent}>
+        <div style={styles.processStepNumber}>0{step.id}</div>
+        <div style={styles.processIconWrapper}>
+          {step.icon}
+        </div>
+
+        <h3 style={styles.processTitle}>{step.title}</h3>
+        <p style={styles.processText}>{step.description}</p>
+      </div>
+    </motion.div>
+  );
+};
+
 export default function LandingPage() {
   const [activeProject, setActiveProject] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const [hoveredProcessIndex, setHoveredProcessIndex] = useState(null);
+  const [zoomedImage, setZoomedImage] = useState(null);
+  const { scrollY } = useScroll();
+
+  // Parallax transforms
+  const y1 = useTransform(scrollY, [0, 1000], [0, 200]);
+  const y2 = useTransform(scrollY, [0, 1000], [0, -150]);
+  const heroTextY = useTransform(scrollY, [0, 500], [0, 100]);
+  const heroImgScale = useTransform(scrollY, [0, 500], [1, 1.1]);
+
+  // Cursor Follower with Spring
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+
+  const springConfig = { damping: 25, stiffness: 300, mass: 0.5 };
+  const cursorX = useSpring(mouseX, springConfig);
+  const cursorY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
-    const rafId = requestAnimationFrame(() => setIsLoaded(true));
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-
-    // Intersection Observer для scroll animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px',
+    const moveCursor = (e) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
     };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('fade-in-visible');
-        }
-      });
-    }, observerOptions);
-
-    const elements = document.querySelectorAll('.fade-in-section');
-    elements.forEach((el) => observer.observe(el));
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', handleScroll);
-      elements.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
+    window.addEventListener('mousemove', moveCursor);
+    return () => window.removeEventListener('mousemove', moveCursor);
+  }, [mouseX, mouseY]);
 
   return (
     <div style={styles.container}>
-      <div
-        style={{
-          ...styles.blob1,
-          transform: `translate(${scrollY * 0.02}px, ${scrollY * 0.01}px)`,
+      <div className="noise-overlay" />
+      <motion.div style={{ ...styles.cursorGlow, x: cursorX, y: cursorY }} />
+
+      {/* Background Blobs */}
+      <motion.div
+        style={{ ...styles.blob1, y: y1 }}
+        animate={{
+          scale: [1, 1.1, 1],
+          rotate: [0, 5, 0],
         }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       />
-      <div
-        style={{
-          ...styles.blob2,
-          transform: `translate(${-scrollY * 0.015}px, ${scrollY * 0.02}px)`,
+      <motion.div
+        style={{ ...styles.blob2, y: y2 }}
+        animate={{
+          scale: [1, 1.2, 1],
+          rotate: [0, -5, 0],
         }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
       <div style={styles.gridLines} />
 
+      {/* Header */}
       <header style={styles.hero}>
-        <nav
-          className="nav-container"
-          style={{
-            ...styles.nav,
-            opacity: isLoaded ? 1 : 0,
-            transform: isLoaded ? 'translateY(0)' : 'translateY(-20px)',
-          }}
-        >
-          <div style={styles.logo}>ИК</div>
-          <div style={styles.navLinks} className="nav-links">
-            <a href="#manifest" style={styles.navLink} className="nav-link">
-              Манифест
-            </a>
-            <a href="#projects" style={styles.navLink} className="nav-link">
-              Проекты
-            </a>
-            <a href="#contact" style={styles.navLink} className="nav-link">
-              Контакт
-            </a>
-          </div>
+        <nav className="nav-container" style={styles.nav}>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            style={styles.logo}
+          >
+            ИК
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            style={styles.navLinks}
+            className="nav-links"
+          >
+            {['manifest', 'projects', 'contact'].map((item) => (
+              <Magnetic key={item}>
+                <a href={`#${item}`} style={styles.navLink} className="nav-link">
+                  {item === 'manifest' ? 'Манифест' : item === 'projects' ? 'Проекты' : 'Контакт'}
+                </a>
+              </Magnetic>
+            ))}
+          </motion.div>
         </nav>
 
         <div style={styles.heroContent} className="hero-content">
-          <div
-            style={{
-              ...styles.heroText,
-              opacity: isLoaded ? 1 : 0,
-              transform: isLoaded ? 'translateY(0)' : 'translateY(40px)',
-              transitionDelay: '0.2s',
-            }}
+          <motion.div
+            style={{ ...styles.heroText, y: heroTextY }}
             className="hero-text"
           >
-            <div style={styles.heroLabel}>Вайб-код разработчик</div>
-            <h1 style={styles.heroTitle} className="hero-title">Илья Кожа</h1>
-            <p style={styles.heroSubtitle} className="hero-subtitle">
-              Создаю приложения под тебя — без корпоративного мусора, лишних фич и чужих правил. Только то, что нужно
-              именно тебе.
-            </p>
-            <div style={styles.heroActions} className="hero-actions">
-              <a
-                href="https://t.me/dreamrandomlab"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.primaryButton}
-              >
-                <TelegramIcon />
-                Telegram
-              </a>
-              <a href="mailto:ilia.kozha@gmail.com" style={styles.secondaryButton}>
-                Написать
-              </a>
-            </div>
-          </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              style={styles.heroLabel}
+            >
+              Вайб-код разработчик
+            </motion.div>
 
-          <div
-            style={{
-              ...styles.heroImageWrapper,
-              opacity: isLoaded ? 1 : 0,
-              transform: isLoaded ? 'scale(1)' : 'scale(0.9)',
-              transitionDelay: '0.4s',
-            }}
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, staggerChildren: 0.1 }}
+              style={styles.heroTitle}
+              className="hero-title"
+            >
+              Илья Кожа
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              style={styles.heroSubtitle}
+              className="hero-subtitle"
+            >
+              Создаю приложения под тебя — без корпоративного мусора, лишних фич и чужих правил. Только то, что нужно именно тебе.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              style={styles.heroActions}
+              className="hero-actions"
+            >
+              <Magnetic>
+                <a
+                  href="https://t.me/dreamrandomlab"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={styles.primaryButton}
+                >
+                  <TelegramIcon />
+                  Telegram
+                </a>
+              </Magnetic>
+              <Magnetic>
+                <a href="mailto:ilia.kozha@gmail.com" style={styles.secondaryButton}>
+                  Написать
+                </a>
+              </Magnetic>
+            </motion.div>
+          </motion.div>
+
+          {/* Hero Image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 1, type: "spring" }}
+            style={{ ...styles.heroImageWrapper, scale: heroImgScale }}
             className="hero-image-wrapper"
           >
             <div style={styles.heroImageFrame} className="hero-image-frame">
               <Image
-                src="/images/ilia-kozha.svg"
+                src="/images/self.JPG"
                 alt="Илья Кожа"
                 width={320}
                 height={400}
@@ -218,213 +444,207 @@ export default function LandingPage() {
                 style={styles.heroImage}
               />
             </div>
-            <div style={styles.decorCircle} />
+            <motion.div
+              style={styles.decorCircle}
+              animate={{ y: [0, -10, 0] }}
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            />
             <div style={styles.decorDots} />
-          </div>
+          </motion.div>
         </div>
 
-        <div
-          style={{
-            ...styles.scrollIndicator,
-            opacity: isLoaded ? 1 : 0,
-            transitionDelay: '0.8s',
-          }}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          style={styles.scrollIndicator}
         >
           <div style={styles.scrollLine} />
           <span style={styles.scrollText}>скролль</span>
-        </div>
+        </motion.div>
       </header>
 
-      <section id="manifest" style={styles.manifestSection} className="manifest-section fade-in-section">
+      {/* Manifest Section */}
+      <section id="manifest" style={styles.manifestSection} className="manifest-section">
         <div style={styles.manifestContent}>
-          <div style={styles.manifestLabel}>Философия</div>
-          <h2 style={styles.manifestTitle} className="manifest-title">«А так можно было?»</h2>
-          <div style={styles.manifestGrid} className="manifest-grid">
-            <div
-              style={styles.manifestCard}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.06)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.02)';
-              }}
-            >
-              <div style={styles.manifestIcon}>✦</div>
-              <h3 style={styles.manifestCardTitle}>Вайб-кодинг</h3>
-              <p style={styles.manifestCardText}>
-                Программирование через диалог с ИИ. Описываешь что хочешь — получаешь работающий код. Без годов обучения,
-                без лишней сложности.
-              </p>
-            </div>
-            <div
-              style={styles.manifestCard}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.06)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.02)';
-              }}
-            >
-              <div style={styles.manifestIcon}>◈</div>
-              <h3 style={styles.manifestCardTitle}>Индивидуальность</h3>
-              <p style={styles.manifestCardText}>
-                Рыночные решения делают «для всех» — значит, ни для кого конкретно. Твоё приложение должно работать
-                именно под твои задачи.
-              </p>
-            </div>
-            <div
-              style={styles.manifestCard}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.06)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.02)';
-              }}
-            >
-              <div style={styles.manifestIcon}>○</div>
-              <h3 style={styles.manifestCardTitle}>Без мусора</h3>
-              <p style={styles.manifestCardText}>
-                Никакой рекламы, сбора данных, ненужных фич и корпоративной нагрузки. Чистый инструмент, который просто
-                работает.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <div style={styles.manifestLabel}>Философия</div>
+            <h2 style={styles.manifestTitle} className="manifest-title">«А так можно было?»</h2>
+          </motion.div>
 
-      <section style={styles.processSection} className="process-section fade-in-section">
-        <div style={styles.processContent}>
-          <div style={styles.sectionLabel}>Процесс</div>
-          <h2 style={styles.sectionTitle}>Как я работаю</h2>
-          <div style={styles.processGrid}>
-            {processSteps.map((step) => (
-              <div
-                key={step.id}
-                style={styles.processCard}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.06)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.02)';
-                }}
+          <div style={styles.manifestGrid} className="manifest-grid">
+            {[
+              { icon: '✦', title: 'Вайб-кодинг', text: 'Программирование через диалог с ИИ. Описываешь что хочешь — получаешь работающий код.' },
+              { icon: '◈', title: 'Индивидуальность', text: 'Рыночные решения делают «для всех». Твоё приложение должно работать именно под твои задачи.' },
+              { icon: '○', title: 'Без мусора', text: 'Никакой рекламы, сбора данных, ненужных фич. Чистый инструмент, который просто работает.' },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -5, boxShadow: '0 30px 60px rgba(0, 0, 0, 0.06)' }}
+                style={styles.manifestCard}
               >
-                <div style={styles.processNumber}>{step.id}</div>
-                <div style={styles.processIcon}>{step.icon}</div>
-                <h3 style={styles.processTitle}>{step.title}</h3>
-                <p style={styles.processText}>{step.description}</p>
-              </div>
+                <motion.div
+                  style={styles.manifestIcon}
+                  animate={{
+                    scale: [1, 1.15, 1],
+                    y: [0, -5, 0],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: i * 0.5,
+                  }}
+                >
+                  {item.icon}
+                </motion.div>
+                <h3 style={styles.manifestCardTitle}>{item.title}</h3>
+                <p style={styles.manifestCardText}>{item.text}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="projects" style={styles.projectsSection} className="projects-section fade-in-section">
+      {/* Process Section */}
+      <section style={styles.processSection} className="process-section">
+        <div style={styles.processContent}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ position: 'relative', zIndex: 2 }}
+          >
+            <div style={styles.processLabel}>Процесс</div>
+            <h2 style={styles.processHeading}>Как я работаю</h2>
+          </motion.div>
+
+          <div style={styles.processWrapper}>
+            {/* Decorative Line with Pulse */}
+            <div style={styles.processLineDecoration}>
+              <motion.div
+                style={{
+                  position: 'absolute',
+                  top: 0, left: 0, bottom: 0,
+                  width: '150px',
+                  background: 'linear-gradient(90deg, transparent 0%, #D4A574 50%, transparent 100%)',
+                  boxShadow: '0 0 20px rgba(212, 165, 116, 0.4)',
+                }}
+                animate={{
+                  x: ['-100%', '1000%'], // Move across 
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "linear",
+                  repeatDelay: 1
+                }}
+              />
+            </div>
+
+            <div style={styles.processGrid}>
+              {processSteps.map((step, i) => (
+                <ProcessCard
+                  key={step.id}
+                  step={step}
+                  index={i}
+                  hoveredIndex={hoveredProcessIndex}
+                  setHoveredIndex={setHoveredProcessIndex}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section (Shared Layout) */}
+      <section id="projects" style={styles.projectsSection} className="projects-section">
         <div style={styles.sectionHeader}>
           <div style={styles.sectionLabel}>Портфолио</div>
           <h2 style={styles.sectionTitle}>Проекты</h2>
         </div>
 
         <div style={styles.projectsGrid} className="projects-grid">
-          {projects.map((project, index) => (
-            <div
-              key={project.id}
-              style={{
-                ...styles.projectCard,
-                animationDelay: `${index * 0.1}s`,
-              }}
-              onClick={() => setActiveProject(project)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-                e.currentTarget.style.boxShadow = '0 20px 60px rgba(45, 42, 38, 0.15)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 4px 30px rgba(45, 42, 38, 0.08)';
-              }}
-            >
-              <div style={{ ...styles.projectAccent, backgroundColor: project.color }} />
-              <div style={styles.projectHeader}>
-                <span style={styles.projectStats}>{project.stats}</span>
-                {project.images.length > 0 && (
-                  <div style={styles.projectGalleryHint}>
-                    <GalleryIcon />
-                    {project.images.length}
-                  </div>
-                )}
-              </div>
-              <h3 style={styles.projectTitle}>{project.title}</h3>
-              <p style={styles.projectSubtitle}>{project.subtitle}</p>
-              <p style={styles.projectDescription}>{project.description}</p>
-              {project.result && (
-                <div style={styles.projectResult}>
-                  <span style={styles.projectResultIcon}>✓</span>
-                  {project.result}
-                </div>
-              )}
-              <div style={styles.projectTags}>
-                {project.tags.map((tag) => (
-                  <span key={tag} style={styles.projectTag}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} onClick={() => setActiveProject(project)} />
           ))}
         </div>
       </section>
 
-      <section style={styles.statsSection} className="stats-section fade-in-section">
+      {/* Stats Section */}
+      <section style={styles.statsSection} className="stats-section">
         <div style={styles.statsGrid} className="stats-grid">
           {stats.map((stat, index) => (
-            <div key={index} style={styles.statItem}>
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              style={styles.statItem}
+            >
               <div style={styles.statValue} className="stat-value">
                 {stat.value}
                 <span style={styles.statSuffix}>{stat.suffix}</span>
               </div>
               <div style={styles.statLabel}>{stat.label}</div>
-            </div>
+            </motion.div>
           ))}
         </div>
-        <div style={styles.statsQuote}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          style={styles.statsQuote}
+        >
           «От твоей идеи — к точному воплощению. Никакого мусора между»
-        </div>
+        </motion.div>
       </section>
 
-      <section id="contact" style={styles.contactSection} className="contact-section fade-in-section">
-        <div style={styles.contactContent}>
+      {/* Contact Section */}
+      <section id="contact" style={styles.contactSection} className="contact-section">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          style={styles.contactContent}
+        >
           <h2 style={styles.contactTitle} className="contact-title">
             Есть идея?
             <br />
             Обсудим за 15 минут
           </h2>
           <p style={styles.contactText}>
-            Если у тебя есть идея приложения, которое решит именно твою проблему — напиши. Обсудим, как это можно
-            сделать быстро и без лишней сложности.
+            Если у тебя есть идея приложения, которое решит именно твою проблему — напиши.
           </p>
           <div style={styles.contactLinks}>
-            <a
-              href="https://t.me/dreamrandomlab"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={styles.contactLink}
-            >
-              <TelegramIcon />
-              @dreamrandomlab
-            </a>
-            <a href="mailto:ilia.kozha@gmail.com" style={styles.contactLink}>
-              <EmailIcon />
-              ilia.kozha@gmail.com
-            </a>
+            <Magnetic>
+              <a
+                href="https://t.me/dreamrandomlab"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.contactLink}
+              >
+                <TelegramIcon />
+                @dreamrandomlab
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a href="mailto:ilia.kozha@gmail.com" style={styles.contactLink}>
+                <EmailIcon />
+                ilia.kozha@gmail.com
+              </a>
+            </Magnetic>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       <footer style={styles.footer}>
@@ -435,57 +655,148 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {activeProject && (
-        <div style={styles.modalOverlay} onClick={() => setActiveProject(null)}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()} className="modal-content">
-            <button style={styles.modalClose} onClick={() => setActiveProject(null)}>
-              ×
-            </button>
-            <div style={{ ...styles.modalAccent, backgroundColor: activeProject.color }} />
-            <h2 style={styles.modalTitle}>{activeProject.title}</h2>
-            <p style={styles.modalSubtitle}>{activeProject.subtitle}</p>
-            <p style={styles.modalDescription}>{activeProject.description}</p>
+      {/* Shared Layout Modal */}
+      <AnimatePresence>
+        {activeProject && (
+          <div style={styles.modalOverlay} onClick={() => setActiveProject(null)}>
+            <motion.div
+              layoutId={`card-container-${activeProject.id}`}
+              transition={spring}
+              style={{ ...styles.modal, position: 'relative', overflow: 'hidden' }}
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <motion.div
+                layoutId={`card-bg-${activeProject.id}`}
+                style={{
+                  position: 'absolute',
+                  top: 0, bottom: 0, left: 0, right: 0,
+                  background: '#fff',
+                  borderRadius: '32px',
+                  zIndex: 0
+                }}
+              />
 
-            {activeProject.images.length > 0 && (
-              <div style={styles.modalGallery}>
-                <div style={styles.galleryLabel}>Скриншоты</div>
-                <div style={styles.galleryGrid} className="gallery-grid">
-                  {activeProject.images.map((img, i) => (
-                    <div key={`${img}-${i}`} style={styles.galleryItem}>
-                      <Image
-                        src={img}
-                        alt={`${activeProject.title} скриншот ${i + 1}`}
-                        width={400}
-                        height={260}
-                        sizes="(max-width: 768px) 100vw, 400px"
-                        style={styles.galleryImage}
-                      />
+              <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <button style={styles.modalClose} onClick={() => setActiveProject(null)}>
+                  ×
+                </button>
+
+                <motion.div layoutId={`card-accent-${activeProject.id}`} style={{ ...styles.modalAccent, backgroundColor: activeProject.color }} />
+
+                <motion.h2 layoutId={`card-title-${activeProject.id}`} style={styles.modalTitle}>
+                  {activeProject.title}
+                </motion.h2>
+                <motion.p layoutId={`card-subtitle-${activeProject.id}`} style={styles.modalSubtitle}>
+                  {activeProject.subtitle}
+                </motion.p>
+                <motion.p layoutId={`card-desc-${activeProject.id}`} style={styles.modalDescription}>
+                  {activeProject.description}
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {activeProject.images.length > 0 && (
+                    <div style={styles.modalGallery}>
+                      <div style={styles.galleryLabel}>Скриншоты</div>
+                      <div style={styles.galleryGrid} className="gallery-grid">
+                        {activeProject.images.map((img, i) => (
+                          <div
+                            key={`${img}-${i}`}
+                            style={styles.galleryItem}
+                            onClick={() => setZoomedImage(img)}
+                          >
+                            <Image
+                              src={img}
+                              alt={`${activeProject.title} скриншот ${i + 1}`}
+                              fill
+                              sizes="(max-width: 768px) 70vw, 300px"
+                              style={styles.galleryImage}
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
+                  )}
+
+                  {activeProject.link && (
+                    <a href={activeProject.link} target="_blank" rel="noopener noreferrer" style={styles.modalLink}>
+                      Открыть проект →
+                    </a>
+                  )}
+                </motion.div>
+
+                <div style={{ marginTop: 'auto' }}>
+                  <div style={styles.modalTags}>
+                    {activeProject.tags.map((tag) => (
+                      <span key={tag} style={styles.modalTag}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            )}
-
-            {activeProject.link && (
-              <a href={activeProject.link} target="_blank" rel="noopener noreferrer" style={styles.modalLink}>
-                Открыть проект →
-              </a>
-            )}
-
-            <div style={styles.modalTags}>
-              {activeProject.tags.map((tag) => (
-                <span key={tag} style={styles.modalTag}>
-                  {tag}
-                </span>
-              ))}
-            </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+        {zoomedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0, left: 0, right: 0, bottom: 0,
+              background: 'rgba(0,0,0,0.9)',
+              backdropFilter: 'blur(10px)',
+              zIndex: 2000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '40px',
+            }}
+            onClick={() => setZoomedImage(null)}
+          >
+            <div style={{ position: 'relative', width: '100%', height: '100%', maxWidth: '1200px' }}>
+              <Image
+                src={zoomedImage}
+                alt="Zoomed"
+                fill
+                style={{ objectFit: 'contain' }}
+              />
+            </div>
+            <button
+              style={{
+                position: 'absolute',
+                top: '32px',
+                right: '32px',
+                background: 'rgba(255,255,255,0.1)',
+                border: 'none',
+                color: '#fff',
+                fontSize: '24px',
+                cursor: 'pointer',
+                borderRadius: '50%',
+                width: '48px',
+                height: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onClick={() => setZoomedImage(null)}
+            >
+              ×
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
+// --- Icons ---
 const TelegramIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z" />
@@ -507,12 +818,26 @@ const GalleryIcon = () => (
   </svg>
 );
 
+// --- Styles ---
+
 const styles = {
   container: {
     minHeight: '100vh',
     position: 'relative',
     background: 'linear-gradient(180deg, #F5F2EB 0%, #EBE6DE 50%, #F5F2EB 100%)',
     overflow: 'hidden',
+  },
+  cursorGlow: {
+    position: 'fixed',
+    top: 0, left: 0,
+    width: '30vh',
+    height: '30vh',
+    background: 'radial-gradient(circle, rgba(199, 91, 58, 0.15) 0%, transparent 70%)',
+    borderRadius: '50%',
+    pointerEvents: 'none',
+    transform: 'translate(-50%, -50%)',
+    zIndex: 0,
+    filter: 'blur(30px)'
   },
   blob1: {
     position: 'fixed',
@@ -524,7 +849,6 @@ const styles = {
     borderRadius: '50%',
     filter: 'blur(80px)',
     pointerEvents: 'none',
-    transition: 'transform 0.3s ease-out',
     zIndex: 0,
   },
   blob2: {
@@ -537,15 +861,11 @@ const styles = {
     borderRadius: '50%',
     filter: 'blur(80px)',
     pointerEvents: 'none',
-    transition: 'transform 0.3s ease-out',
     zIndex: 0,
   },
   gridLines: {
     position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 0, left: 0, right: 0, bottom: 0,
     backgroundImage: `
       linear-gradient(rgba(45, 42, 38, 0.02) 1px, transparent 1px),
       linear-gradient(90deg, rgba(45, 42, 38, 0.02) 1px, transparent 1px)
@@ -561,7 +881,6 @@ const styles = {
     padding: '32px 64px',
     position: 'relative',
     zIndex: 100,
-    transition: 'all 0.6s ease',
   },
   logo: {
     fontFamily: "'Playfair Display', serif",
@@ -597,9 +916,8 @@ const styles = {
     textDecoration: 'none',
     letterSpacing: '0.5px',
     textTransform: 'uppercase',
-    transition: 'all 0.3s ease',
-    position: 'relative',
-    opacity: 0.7,
+    padding: '8px 4px',
+    display: 'block',
   },
   hero: {
     minHeight: '100vh',
@@ -622,7 +940,6 @@ const styles = {
   heroText: {
     flex: 1,
     maxWidth: '640px',
-    transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
   },
   heroLabel: {
     fontFamily: "'Outfit', sans-serif",
@@ -673,8 +990,6 @@ const styles = {
     fontWeight: '500',
     textDecoration: 'none',
     borderRadius: '100px',
-    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-    cursor: 'pointer',
     boxShadow: '0 10px 30px rgba(45, 42, 38, 0.15)',
   },
   secondaryButton: {
@@ -690,13 +1005,10 @@ const styles = {
     textDecoration: 'none',
     borderRadius: '100px',
     border: '1px solid rgba(45, 42, 38, 0.1)',
-    transition: 'all 0.3s ease',
-    cursor: 'pointer',
     backdropFilter: 'blur(10px)',
   },
   heroImageWrapper: {
     position: 'relative',
-    transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
   },
   heroImageFrame: {
     width: '360px',
@@ -713,7 +1025,6 @@ const styles = {
     height: '100%',
     objectFit: 'cover',
     objectPosition: 'center top',
-    transition: 'transform 0.8s ease',
   },
   decorCircle: {
     position: 'absolute',
@@ -723,7 +1034,6 @@ const styles = {
     height: '100px',
     border: '2px solid rgba(199, 91, 58, 0.2)',
     borderRadius: '50%',
-    animation: 'float 5s ease-in-out infinite',
     zIndex: -1,
   },
   decorDots: {
@@ -746,14 +1056,12 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     gap: '12px',
-    transition: 'opacity 0.6s ease',
     zIndex: 10,
   },
   scrollLine: {
     width: '1px',
     height: '60px',
     background: 'linear-gradient(180deg, rgba(45, 42, 38, 0), #2D2A26)',
-    animation: 'scrollDown 2s ease-in-out infinite',
   },
   scrollText: {
     fontFamily: "'Outfit', sans-serif",
@@ -798,147 +1106,184 @@ const styles = {
   manifestCard: {
     padding: '48px',
     background: 'rgba(255, 255, 255, 0.4)',
-    backdropFilter: 'blur(24px)',
-    borderRadius: '32px',
-    border: '1px solid rgba(255, 255, 255, 0.6)',
-    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.02)',
+    borderRadius: '24px',
+    border: '1px solid rgba(255, 255, 255, 0.4)',
+    backdropFilter: 'blur(10px)',
+    transition: 'all 0.4s ease',
   },
   manifestIcon: {
-    fontSize: '40px',
-    color: '#C75B3A',
+    fontSize: '32px',
     marginBottom: '24px',
-    display: 'inline-block',
-    padding: '16px',
-    background: 'rgba(199, 91, 58, 0.05)',
-    borderRadius: '20px',
+    color: '#C75B3A',
   },
   manifestCardTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: '28px',
-    fontWeight: '500',
-    color: '#2D2A26',
+    fontSize: '24px',
     marginBottom: '16px',
+    color: '#2D2A26',
   },
   manifestCardText: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '16px',
-    fontWeight: '400',
+    lineHeight: '1.6',
     color: '#5C5954',
-    lineHeight: '1.7',
-    opacity: 0.9,
-  },
-  projectsSection: {
-    padding: '80px 64px 100px',
-    position: 'relative',
-    zIndex: 2,
-  },
-  sectionHeader: {
-    maxWidth: '1280px',
-    margin: '0 auto 80px',
-  },
-  sectionLabel: {
-    fontFamily: "'Outfit', sans-serif",
-    fontSize: '13px',
-    fontWeight: '600',
-    color: '#C75B3A',
-    letterSpacing: '2px',
-    textTransform: 'uppercase',
-    marginBottom: '16px',
-    opacity: 0.8,
-  },
-  sectionTitle: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: 'clamp(40px, 6vw, 64px)',
-    fontWeight: '500',
-    color: '#2D2A26',
-    marginBottom: '60px',
-    maxWidth: '800px',
   },
   processSection: {
-    padding: '80px 64px',
+    padding: '120px 0',
     position: 'relative',
+  },
+  processWrapper: {
+    background: '#1A1816',
+    borderRadius: '40px',
+    padding: '64px',
+    margin: '64px 32px 0',
+    position: 'relative',
+    overflow: 'hidden',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
+  },
+  processLineDecoration: {
+    position: 'absolute',
+    top: '320px',
+    left: '0',
+    right: '0',
+    height: '1px',
+    background: 'rgba(255, 255, 255, 0.05)',
+    pointerEvents: 'none',
     zIndex: 2,
+    overflow: 'hidden',
   },
   processContent: {
-    maxWidth: '1280px',
+    maxWidth: '1440px',
     margin: '0 auto',
+    padding: '0 64px',
+    position: 'relative',
+    zIndex: 1,
+  },
+  processLabel: {
+    fontFamily: "'Outfit', sans-serif",
+    fontSize: '14px',
+    fontWeight: '600',
+    letterSpacing: '2px',
+    textTransform: 'uppercase',
+    color: '#8B9A7D',
+    marginBottom: '24px',
+  },
+  processHeading: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: '64px',
+    color: '#2D2A26',
   },
   processGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gridTemplateColumns: 'repeat(3, 1fr)',
     gap: '40px',
   },
   processCard: {
     position: 'relative',
     padding: '48px 40px',
-    background: 'rgba(255, 255, 255, 0.4)',
-    backdropFilter: 'blur(24px)',
     borderRadius: '32px',
-    border: '1px solid rgba(255, 255, 255, 0.6)',
-    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.02)',
+    background: 'rgba(255,255,255,0.02)',
+    border: '1px solid rgba(255,255,255,0.05)',
+    overflow: 'hidden',
+    cursor: 'default',
+    minHeight: '400px',
+    display: 'flex',
+    flexDirection: 'column',
+    transition: 'border-color 0.3s ease',
   },
-  processNumber: {
+  spotlight: {
+    pointerEvents: 'none',
     position: 'absolute',
-    top: '24px',
-    right: '24px',
-    fontFamily: "'Playfair Display', serif",
-    fontSize: '64px',
-    fontWeight: '300',
-    color: 'rgba(199, 91, 58, 0.1)',
-    lineHeight: '1',
+    inset: 0,
+    zIndex: 0,
+    opacity: 0.5,
   },
-  processIcon: {
-    fontSize: '48px',
-    marginBottom: '24px',
-    display: 'block',
-    color: '#C75B3A',
+  processCardContent: {
+    position: 'relative',
+    zIndex: 1,
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  processStepNumber: {
+    position: 'absolute',
+    top: '-30px',
+    right: '-20px',
+    fontSize: '180px',
+    fontFamily: "'Playfair Display', serif",
+    fontWeight: '700',
+    color: 'transparent',
+    WebkitTextStroke: '1px rgba(255,255,255,0.12)',
+    lineHeight: 1,
+    pointerEvents: 'none',
+    zIndex: 0,
+    opacity: 0.6,
+  },
+  processIconWrapper: {
+    width: '72px',
+    height: '72px',
+    borderRadius: '20px',
+    background: 'rgba(255,255,255,0.03)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    backdropFilter: 'blur(10px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '56px',
+    fontSize: '28px',
+    color: '#D4A574',
+    boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
   },
   processTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: '28px',
-    fontWeight: '500',
-    color: '#2D2A26',
-    marginBottom: '16px',
+    fontSize: '26px',
+    lineHeight: '1.2',
+    minHeight: '64px',
+    marginBottom: '24px',
+    color: '#FAF8F5',
+    position: 'relative',
+    zIndex: 1,
+    display: 'flex',
+    alignItems: 'start',
   },
   processText: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '16px',
-    fontWeight: '400',
-    color: '#5C5954',
-    lineHeight: '1.7',
-    opacity: 0.9,
+    lineHeight: '1.6',
+    color: 'rgba(250, 248, 245, 0.6)',
+    position: 'relative',
+    zIndex: 1,
+    maxWidth: '90%',
+  },
+  projectsSection: {
+    padding: '100px 64px',
+    position: 'relative',
+    zIndex: 2,
+  },
+  sectionHeader: {
+    maxWidth: '1280px',
+    margin: '0 auto',
+    marginBottom: '60px',
   },
   projectsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
-    gap: '40px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+    gap: '32px',
     maxWidth: '1280px',
     margin: '0 auto',
   },
   projectCard: {
-    position: 'relative',
-    padding: '40px',
-    background: 'rgba(255, 255, 255, 0.5)',
-    backdropFilter: 'blur(30px)',
-    borderRadius: '32px',
-    border: '1px solid rgba(255, 255, 255, 0.6)',
+    borderRadius: '24px',
+    padding: '32px',
     cursor: 'pointer',
-    transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-    boxShadow: '0 10px 30px rgba(45, 42, 38, 0.04)',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
+    minHeight: '420px',
   },
   projectAccent: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: '6px',
-    opacity: 0.8,
+    width: '40px',
+    height: '4px',
+    borderRadius: '2px',
+    marginTop: '16px',
+    marginBottom: '24px',
   },
   projectHeader: {
     display: 'flex',
@@ -949,24 +1294,21 @@ const styles = {
   projectStats: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '12px',
-    fontWeight: '600',
-    color: '#8B8680',
-    letterSpacing: '1px',
     textTransform: 'uppercase',
+    letterSpacing: '1px',
+    color: '#8B8680',
+    background: 'rgba(255, 255, 255, 0.4)',
     padding: '6px 12px',
-    background: 'rgba(45, 42, 38, 0.05)',
     borderRadius: '100px',
   },
   projectGalleryHint: {
     display: 'flex',
     alignItems: 'center',
     gap: '6px',
-    fontFamily: "'Outfit', sans-serif",
     fontSize: '12px',
-    fontWeight: '500',
     color: '#8B8680',
+    background: 'rgba(255, 255, 255, 0.4)',
     padding: '6px 12px',
-    background: 'rgba(255, 255, 255, 0.5)',
     borderRadius: '100px',
   },
   projectTitle: {
@@ -978,165 +1320,147 @@ const styles = {
   },
   projectSubtitle: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '15px',
-    fontWeight: '500',
-    color: '#C75B3A',
-    marginBottom: '20px',
-    display: 'block',
+    fontSize: '16px',
+    color: '#5C5954',
+    marginBottom: '16px',
+    opacity: 0.8,
   },
   projectDescription: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '16px',
-    fontWeight: '400',
+    fontSize: '15px',
+    lineHeight: '1.6',
     color: '#5C5954',
-    lineHeight: '1.7',
-    marginBottom: '20px',
+    marginBottom: '24px',
+    display: '-webkit-box',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
   },
   projectResult: {
     display: 'flex',
-    alignItems: 'center',
     gap: '8px',
-    padding: '12px 16px',
-    background: 'rgba(139, 154, 125, 0.08)',
-    borderRadius: '12px',
+    alignItems: 'start',
     fontFamily: "'Outfit', sans-serif",
     fontSize: '14px',
-    fontWeight: '500',
-    color: '#5C5954',
+    color: '#2D2A26',
     marginBottom: '24px',
-    border: '1px solid rgba(139, 154, 125, 0.15)',
+    padding: '12px',
+    background: 'rgba(240, 240, 235, 0.5)',
+    borderRadius: '12px',
   },
   projectResultIcon: {
-    fontSize: '16px',
-    color: '#8B9A7D',
+    color: '#4A6145',
+    fontWeight: 'bold',
   },
   projectTags: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '10px',
+    gap: '8px',
   },
   projectTag: {
-    padding: '8px 16px',
-    background: 'rgba(255, 255, 255, 0.6)',
-    borderRadius: '100px',
     fontFamily: "'Outfit', sans-serif",
     fontSize: '12px',
-    fontWeight: '500',
     color: '#5C5954',
-    border: '1px solid rgba(45, 42, 38, 0.05)',
+    padding: '4px 12px',
+    borderRadius: '100px',
+    border: '1px solid rgba(45, 42, 38, 0.08)',
   },
   statsSection: {
-    padding: '80px 64px',
-    background: '#2D2A26',
+    padding: '100px 64px',
     position: 'relative',
+    zIndex: 2,
+    background: '#2D2A26',
     color: '#FAF8F5',
-    overflow: 'hidden',
+    marginTop: '100px',
   },
   statsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '60px',
-    maxWidth: '1200px',
-    margin: '0 auto 60px',
-    position: 'relative',
-    zIndex: 2,
+    gap: '80px',
+    maxWidth: '1280px',
+    margin: '0 auto',
+    marginBottom: '120px',
   },
   statItem: {
     textAlign: 'center',
   },
   statValue: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: 'clamp(56px, 6vw, 80px)',
-    fontWeight: '400',
+    fontSize: '64px',
+    fontWeight: '500',
+    marginBottom: '16px',
     color: '#FAF8F5',
-    lineHeight: '1',
-    marginBottom: '12px',
-    display: 'flex',
-    alignItems: 'baseline',
-    justifyContent: 'center',
-    gap: '4px',
   },
   statSuffix: {
-    fontSize: '0.5em',
-    opacity: 0.6,
-    fontFamily: "'Outfit', sans-serif",
-    fontWeight: '300',
+    fontSize: '32px',
+    opacity: 0.5,
+    marginLeft: '4px',
   },
   statLabel: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '14px',
-    fontWeight: '400',
-    color: 'rgba(250, 248, 245, 0.6)',
-    letterSpacing: '1px',
     textTransform: 'uppercase',
+    letterSpacing: '2px',
+    opacity: 0.6,
   },
   statsQuote: {
-    textAlign: 'center',
     fontFamily: "'Playfair Display', serif",
-    fontSize: 'clamp(24px, 4vw, 32px)',
-    fontWeight: '400',
-    color: 'rgba(250, 248, 245, 0.9)',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    lineHeight: '1.4',
-    fontStyle: 'italic',
-    position: 'relative',
-    zIndex: 2,
-  },
-  contactSection: {
-    padding: '100px 64px',
-    position: 'relative',
-    zIndex: 2,
-  },
-  contactContent: {
+    fontSize: 'clamp(24px, 4vw, 40px)',
+    textAlign: 'center',
     maxWidth: '800px',
     margin: '0 auto',
+    lineHeight: '1.4',
+    opacity: 0.9,
+  },
+  contactSection: {
+    padding: '160px 64px',
+    position: 'relative',
+    zIndex: 2,
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  contactContent: {
     textAlign: 'center',
+    maxWidth: '700px',
   },
   contactTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: 'clamp(48px, 6vw, 72px)',
+    fontSize: 'clamp(40px, 5vw, 64px)',
     fontWeight: '500',
     color: '#2D2A26',
     marginBottom: '32px',
-    lineHeight: '1.1',
+    lineHeight: '1.2',
   },
   contactText: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '18px',
-    fontWeight: '400',
     color: '#5C5954',
+    marginBottom: '48px',
     lineHeight: '1.6',
-    marginBottom: '60px',
-    maxWidth: '600px',
-    margin: '0 auto 60px',
   },
   contactLinks: {
     display: 'flex',
     justifyContent: 'center',
-    gap: '24px',
+    gap: '32px',
     flexWrap: 'wrap',
   },
   contactLink: {
-    display: 'inline-flex',
+    display: 'flex',
     alignItems: 'center',
     gap: '12px',
-    padding: '20px 40px',
-    background: '#fff',
-    color: '#2D2A26',
+    fontSize: '18px',
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '16px',
-    fontWeight: '500',
+    color: '#2D2A26',
     textDecoration: 'none',
+    padding: '12px 24px',
     borderRadius: '100px',
-    boxShadow: '0 20px 40px rgba(45, 42, 38, 0.08)',
-    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-    border: '1px solid rgba(45, 42, 38, 0.05)',
+    background: 'rgba(255, 255, 255, 0.4)',
+    border: '1px solid rgba(45, 42, 38, 0.1)',
+    transition: 'all 0.3s ease',
   },
   footer: {
     padding: '40px 64px',
-    borderTop: '1px solid rgba(45, 42, 38, 0.06)',
-    background: '#FAF8F5',
+    borderTop: '1px solid rgba(45, 42, 38, 0.05)',
   },
   footerContent: {
     maxWidth: '1440px',
@@ -1144,13 +1468,12 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: '16px',
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '14px',
+    fontSize: '13px',
     color: '#8B8680',
   },
   footerDivider: {
-    opacity: 0.4,
+    margin: '0 12px',
   },
   modalOverlay: {
     position: 'fixed',
@@ -1159,129 +1482,125 @@ const styles = {
     right: 0,
     bottom: 0,
     background: 'rgba(45, 42, 38, 0.6)',
-    backdropFilter: 'blur(12px)',
+    backdropFilter: 'blur(8px)',
     zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '20px',
-    animation: 'fadeIn 0.3s ease-out',
+    padding: '40px',
   },
   modal: {
-    background: '#FAF8F5',
-    borderRadius: '32px',
-    padding: '48px',
-    maxWidth: '900px',
     width: '100%',
+    maxWidth: '900px',
     maxHeight: '90vh',
+    padding: '64px 64px 80px',
     overflowY: 'auto',
-    position: 'relative',
-    boxShadow: '0 40px 100px rgba(0, 0, 0, 0.2)',
-    animation: 'scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
   },
   modalClose: {
     position: 'absolute',
-    top: '24px',
-    right: '24px',
-    width: '40px',
-    height: '40px',
-    borderRadius: '50%',
+    top: '32px',
+    right: '32px',
+    background: 'none',
     border: 'none',
-    background: 'rgba(45, 42, 38, 0.05)',
-    color: '#2D2A26',
-    fontSize: '24px',
+    fontSize: '32px',
     cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    color: '#2D2A26',
+    opacity: 0.5,
+    zIndex: 10,
+    transition: 'opacity 0.2s',
   },
   modalAccent: {
     width: '60px',
     height: '6px',
-    borderRadius: '100px',
+    borderRadius: '3px',
     marginBottom: '32px',
   },
   modalTitle: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: '40px',
+    fontSize: '48px',
     fontWeight: '500',
     color: '#2D2A26',
-    marginBottom: '8px',
+    marginBottom: '16px',
   },
   modalSubtitle: {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '18px',
-    fontWeight: '500',
-    color: '#C75B3A',
-    marginBottom: '24px',
+    fontSize: '20px',
+    color: '#5C5954',
+    marginBottom: '32px',
   },
   modalDescription: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '18px',
-    fontWeight: '400',
-    color: '#5C5954',
     lineHeight: '1.7',
-    marginBottom: '40px',
+    color: '#2D2A26',
+    marginBottom: '48px',
     maxWidth: '700px',
   },
   modalGallery: {
-    marginBottom: '40px',
+    marginBottom: '48px',
   },
   galleryLabel: {
     fontFamily: "'Outfit', sans-serif",
     fontSize: '13px',
-    fontWeight: '600',
-    color: '#8B8680',
     textTransform: 'uppercase',
-    letterSpacing: '1px',
-    marginBottom: '20px',
+    letterSpacing: '2px',
+    color: '#8B8680',
+    marginBottom: '24px',
   },
   galleryGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '24px',
+    display: 'flex',
+    overflowX: 'auto',
+    scrollSnapType: 'x mandatory',
+    gap: '16px',
+    paddingBottom: '20px',
+    scrollbarWidth: 'none', // Firefox
+    msOverflowStyle: 'none',  // IE 10+
+    WebkitOverflowScrolling: 'touch',
   },
   galleryItem: {
-    borderRadius: '16px',
+    minWidth: '280px',
+    flex: '0 0 auto',
+    scrollSnapAlign: 'start',
+    borderRadius: '12px',
     overflow: 'hidden',
-    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
-    background: '#fff',
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+    position: 'relative',
+    aspectRatio: '16/10',
+    background: '#F5F5F7',
+    cursor: 'zoom-in',
+    transition: 'transform 0.2s',
   },
   galleryImage: {
-    width: '100%',
-    height: 'auto',
-    display: 'block',
+    objectFit: 'cover',
+    objectPosition: 'top',
   },
   modalLink: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '10px',
-    padding: '16px 32px',
+    gap: '8px',
+    marginTop: '16px',
+    marginBottom: '24px',
+    padding: '12px 28px',
     background: '#2D2A26',
     color: '#FAF8F5',
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '15px',
+    fontSize: '14px',
     fontWeight: '500',
     textDecoration: 'none',
     borderRadius: '100px',
-    marginBottom: '40px',
-    transition: 'all 0.3s ease',
+    boxShadow: '0 4px 12px rgba(45, 42, 38, 0.1)',
+    transition: 'all 0.2s ease',
   },
   modalTags: {
     display: 'flex',
-    flexWrap: 'wrap',
     gap: '12px',
-    borderTop: '1px solid rgba(45, 42, 38, 0.08)',
-    paddingTop: '32px',
   },
   modalTag: {
-    padding: '8px 16px',
-    background: 'rgba(45, 42, 38, 0.04)',
-    borderRadius: '100px',
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '13px',
-    fontWeight: '500',
+    fontSize: '14px',
     color: '#5C5954',
+    padding: '8px 20px',
+    borderRadius: '100px',
+    background: 'rgba(45, 42, 38, 0.05)',
   },
 };
