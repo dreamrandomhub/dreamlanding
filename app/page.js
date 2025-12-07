@@ -24,7 +24,7 @@ const projects = [
     tags: ['AI', 'B2C', 'Генерация'],
     color: '#C75B3A',
     stats: '100+ пользователей',
-    result: '1000+ сказок создано',
+    result: '100+ сказок создано',
     images: ['/images/skoroskazka1.png', '/images/skoroskazka2 .png', '/images/skoroskazka3.png'],
     link: 'https://skoroskazka.ru',
   },
@@ -87,21 +87,21 @@ const processSteps = [
     icon: '◆',
     title: 'Обсуждаем',
     description:
-      'Простым языком, без ТЗ и корпоративных формальностей. Просто рассказываешь, что нужно.',
+      'Простым языком, помогаю с ТЗ. Без корпоративных формальностей. Просто рассказываешь, что нужно. Прикидываем цены и сроки.',
   },
   {
     id: 2,
     icon: '◈',
-    title: 'MVP за 3-5 дней',
+    title: 'MVP за 1-3 дня',
     description:
-      'Быстрый прототип, чтобы ты увидел идею в действии и понял, туда ли мы движемся.',
+      'Быстрый прототип, чтобы ты увидел идею в действии и понял, туда ли мы движемся. Заключаем сделку.',
   },
   {
     id: 3,
     icon: '○',
     title: 'Доводим до идеала',
     description:
-      'Корректируем вместе, пока не получится именно то, что ты задумал. Без ограничений.',
+      'Корректируем вместе, реализуем то, что ты задумал. Расширяем и улучшаем по любому направлению.',
   },
 ];
 
@@ -251,6 +251,7 @@ const ProcessCard = ({ step, index, hoveredIndex, setHoveredIndex }) => {
   return (
     <motion.div
       style={styles.processCard}
+      className="process-card"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -272,13 +273,13 @@ const ProcessCard = ({ step, index, hoveredIndex, setHoveredIndex }) => {
       />
 
       <div style={styles.processCardContent}>
-        <div style={styles.processStepNumber}>0{step.id}</div>
-        <div style={styles.processIconWrapper}>
+        <div style={styles.processStepNumber} className="process-step-number">0{step.id}</div>
+        <div style={styles.processIconWrapper} className="process-icon-wrapper">
           {step.icon}
         </div>
 
-        <h3 style={styles.processTitle}>{step.title}</h3>
-        <p style={styles.processText}>{step.description}</p>
+        <h3 style={styles.processTitle} className="process-title">{step.title}</h3>
+        <p style={styles.processText} className="process-text">{step.description}</p>
       </div>
     </motion.div>
   );
@@ -312,6 +313,18 @@ export default function LandingPage() {
     window.addEventListener('mousemove', moveCursor);
     return () => window.removeEventListener('mousemove', moveCursor);
   }, [mouseX, mouseY]);
+
+  // Блокируем скролл body когда модалка открыта
+  useEffect(() => {
+    if (activeProject || zoomedImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeProject, zoomedImage]);
 
   return (
     <div style={styles.container}>
@@ -478,9 +491,9 @@ export default function LandingPage() {
 
           <div style={styles.manifestGrid} className="manifest-grid">
             {[
-              { icon: '✦', title: 'Вайб-кодинг', text: 'Программирование через диалог с ИИ. Описываешь что хочешь — получаешь работающий код.' },
-              { icon: '◈', title: 'Индивидуальность', text: 'Рыночные решения делают «для всех». Твоё приложение должно работать именно под твои задачи.' },
-              { icon: '○', title: 'Без мусора', text: 'Никакой рекламы, сбора данных, ненужных фич. Чистый инструмент, который просто работает.' },
+              { icon: '✦', title: 'ИИ кодинг', text: 'Программирование через диалог с ИИ. Возможность выбирать архитектуру и подход к разработке. Гибкость и индивидуальность.' },
+              { icon: '◈', title: 'Индивидуальность', text: 'Рыночные решения делают «для всех». ИИ дает персонализацию. Твоё приложение должно работать именно под твои задачи.' },
+              { icon: '○', title: 'Без мусора', text: 'Никакой рекламы, сбора данных, ненужных фич. Чистый инструмент, который просто работает как ты этого хотел.' },
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -490,9 +503,11 @@ export default function LandingPage() {
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -5, boxShadow: '0 30px 60px rgba(0, 0, 0, 0.06)' }}
                 style={styles.manifestCard}
+                className="manifest-card"
               >
                 <motion.div
                   style={styles.manifestIcon}
+                  className="manifest-icon"
                   animate={{
                     scale: [1, 1.15, 1],
                     y: [0, -5, 0],
@@ -506,8 +521,8 @@ export default function LandingPage() {
                 >
                   {item.icon}
                 </motion.div>
-                <h3 style={styles.manifestCardTitle}>{item.title}</h3>
-                <p style={styles.manifestCardText}>{item.text}</p>
+                <h3 style={styles.manifestCardTitle} className="manifest-card-title">{item.title}</h3>
+                <p style={styles.manifestCardText} className="manifest-card-text">{item.text}</p>
               </motion.div>
             ))}
           </div>
@@ -516,20 +531,20 @@ export default function LandingPage() {
 
       {/* Process Section */}
       <section style={styles.processSection} className="process-section">
-        <div style={styles.processContent}>
+        <div style={styles.processContent} className="process-content">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             style={{ position: 'relative', zIndex: 2 }}
           >
-            <div style={styles.processLabel}>Процесс</div>
-            <h2 style={styles.processHeading}>Как я работаю</h2>
+            <div style={styles.processLabel} className="process-label">Процесс</div>
+            <h2 style={styles.processHeading} className="process-heading">Как я работаю</h2>
           </motion.div>
 
-          <div style={styles.processWrapper}>
+          <div style={styles.processWrapper} className="process-wrapper">
             {/* Decorative Line with Pulse */}
-            <div style={styles.processLineDecoration}>
+            <div style={styles.processLineDecoration} className="process-line-decoration">
               <motion.div
                 style={{
                   position: 'absolute',
@@ -550,7 +565,7 @@ export default function LandingPage() {
               />
             </div>
 
-            <div style={styles.processGrid}>
+            <div style={styles.processGrid} className="process-grid">
               {processSteps.map((step, i) => (
                 <ProcessCard
                   key={step.id}
@@ -658,7 +673,7 @@ export default function LandingPage() {
       {/* Shared Layout Modal */}
       <AnimatePresence>
         {activeProject && (
-          <div style={styles.modalOverlay} onClick={() => setActiveProject(null)}>
+          <div key="project-modal" style={styles.modalOverlay} className="modal-overlay" onClick={() => setActiveProject(null)}>
             <motion.div
               layoutId={`card-container-${activeProject.id}`}
               transition={spring}
@@ -678,19 +693,19 @@ export default function LandingPage() {
               />
 
               <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <button style={styles.modalClose} onClick={() => setActiveProject(null)}>
+                <button style={styles.modalClose} className="modal-close" onClick={() => setActiveProject(null)}>
                   ×
                 </button>
 
-                <motion.div layoutId={`card-accent-${activeProject.id}`} style={{ ...styles.modalAccent, backgroundColor: activeProject.color }} />
+                <motion.div layoutId={`card-accent-${activeProject.id}`} className="modal-accent" style={{ ...styles.modalAccent, backgroundColor: activeProject.color }} />
 
-                <motion.h2 layoutId={`card-title-${activeProject.id}`} style={styles.modalTitle}>
+                <motion.h2 layoutId={`card-title-${activeProject.id}`} className="modal-title" style={styles.modalTitle}>
                   {activeProject.title}
                 </motion.h2>
-                <motion.p layoutId={`card-subtitle-${activeProject.id}`} style={styles.modalSubtitle}>
+                <motion.p layoutId={`card-subtitle-${activeProject.id}`} className="modal-subtitle" style={styles.modalSubtitle}>
                   {activeProject.subtitle}
                 </motion.p>
-                <motion.p layoutId={`card-desc-${activeProject.id}`} style={styles.modalDescription}>
+                <motion.p layoutId={`card-desc-${activeProject.id}`} className="modal-description" style={styles.modalDescription}>
                   {activeProject.description}
                 </motion.p>
 
@@ -700,13 +715,14 @@ export default function LandingPage() {
                   transition={{ delay: 0.2 }}
                 >
                   {activeProject.images.length > 0 && (
-                    <div style={styles.modalGallery}>
-                      <div style={styles.galleryLabel}>Скриншоты</div>
+                    <div style={styles.modalGallery} className="modal-gallery">
+                      <div style={styles.galleryLabel} className="gallery-label">Скриншоты</div>
                       <div style={styles.galleryGrid} className="gallery-grid">
                         {activeProject.images.map((img, i) => (
                           <div
-                            key={`${img}-${i}`}
+                            key={`gallery-${activeProject.id}-${i}`}
                             style={styles.galleryItem}
+                            className="gallery-item"
                             onClick={() => setZoomedImage(img)}
                           >
                             <Image
@@ -723,16 +739,16 @@ export default function LandingPage() {
                   )}
 
                   {activeProject.link && (
-                    <a href={activeProject.link} target="_blank" rel="noopener noreferrer" style={styles.modalLink}>
+                    <a href={activeProject.link} target="_blank" rel="noopener noreferrer" style={styles.modalLink} className="modal-link">
                       Открыть проект →
                     </a>
                   )}
                 </motion.div>
 
                 <div style={{ marginTop: 'auto' }}>
-                  <div style={styles.modalTags}>
+                  <div style={styles.modalTags} className="modal-tags">
                     {activeProject.tags.map((tag) => (
-                      <span key={tag} style={styles.modalTag}>
+                      <span key={tag} style={styles.modalTag} className="modal-tag">
                         {tag}
                       </span>
                     ))}
@@ -744,6 +760,7 @@ export default function LandingPage() {
         )}
         {zoomedImage && (
           <motion.div
+            key="zoomed-image"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -765,6 +782,9 @@ export default function LandingPage() {
                 src={zoomedImage}
                 alt="Zoomed"
                 fill
+                sizes="100vw"
+                quality={100}
+                priority
                 style={{ objectFit: 'contain' }}
               />
             </div>

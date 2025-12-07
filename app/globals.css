@@ -183,6 +183,193 @@ a {
     grid-template-columns: 1fr !important;
   }
 
+  /* Унификация карточек Философии */
+  .manifest-card {
+    padding: 24px !important;
+    border-radius: 20px !important;
+  }
+
+  .manifest-icon {
+    font-size: 24px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .manifest-card-title {
+    font-size: 20px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .manifest-card-text {
+    font-size: 14px !important;
+  }
+
+  /* === СЕКЦИЯ "КАК Я РАБОТАЮ" — МОБИЛЬНАЯ АДАПТАЦИЯ === */
+  .process-section {
+    padding: 60px 0 !important;
+  }
+
+  .process-wrapper {
+    margin: 24px 0 0 !important;
+    padding: 24px 16px !important;
+    border-radius: 0 !important;
+  }
+
+  .process-content {
+    padding: 0 24px !important;
+  }
+
+  /* Скрываем горизонтальную декоративную линию */
+  .process-line-decoration {
+    display: none !important;
+  }
+
+  /* Вертикальная сетка карточек с отступом для линии */
+  .process-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    padding: 0 0 0 28px !important;
+    position: relative;
+  }
+
+  /* Вертикальная объединяющая нить */
+  .process-grid::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 40px;
+    bottom: 40px;
+    width: 2px;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(212, 165, 116, 0.2) 5%,
+        rgba(212, 165, 116, 0.4) 50%,
+        rgba(212, 165, 116, 0.2) 95%,
+        transparent 100%);
+    z-index: 1;
+  }
+
+  /* Пульсирующий "поток" на линии */
+  .process-grid::after {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 40px;
+    width: 2px;
+    height: 80px;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(212, 165, 116, 0.8) 30%,
+        #D4A574 50%,
+        rgba(212, 165, 116, 0.8) 70%,
+        transparent 100%);
+    z-index: 2;
+    animation: flowDown 3s ease-in-out infinite;
+    box-shadow: 0 0 12px rgba(212, 165, 116, 0.5);
+  }
+
+  @keyframes flowDown {
+    0% {
+      top: 40px;
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    90% {
+      opacity: 1;
+    }
+
+    100% {
+      top: calc(100% - 120px);
+      opacity: 0;
+    }
+  }
+
+  /* Карточки процесса — с отступами для визуального разделения */
+  .process-card {
+    min-height: auto !important;
+    padding: 20px !important;
+    border-radius: 16px !important;
+    width: 100% !important;
+    margin-bottom: 16px !important;
+    position: relative;
+  }
+
+  /* Точка-маркер на линии для каждой карточки */
+  .process-card::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 28px;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle, #D4A574 30%, rgba(212, 165, 116, 0.3) 100%);
+    border-radius: 50%;
+    border: 2px solid #1A1816;
+    z-index: 3;
+    box-shadow: 0 0 8px rgba(212, 165, 116, 0.6);
+    animation: pulsePoint 2s ease-in-out infinite;
+  }
+
+  .process-card:nth-child(1)::before {
+    animation-delay: 0s;
+  }
+
+  .process-card:nth-child(2)::before {
+    animation-delay: 0.3s;
+  }
+
+  .process-card:nth-child(3)::before {
+    animation-delay: 0.6s;
+  }
+
+  @keyframes pulsePoint {
+
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 8px rgba(212, 165, 116, 0.6);
+    }
+
+    50% {
+      transform: scale(1.2);
+      box-shadow: 0 0 16px rgba(212, 165, 116, 0.9);
+    }
+  }
+
+  .process-step-number {
+    font-size: 80px !important;
+    top: -10px !important;
+    right: -5px !important;
+  }
+
+  .process-icon-wrapper {
+    width: 48px !important;
+    height: 48px !important;
+    margin-bottom: 16px !important;
+    font-size: 20px !important;
+  }
+
+  .process-title {
+    font-size: 20px !important;
+    min-height: auto !important;
+    margin-bottom: 12px !important;
+  }
+
+  .process-text {
+    font-size: 14px !important;
+  }
+
+  .process-heading {
+    font-size: 36px !important;
+  }
+
+  .process-label {
+    font-size: 12px !important;
+  }
+
   .projects-section {
     padding: 80px 24px !important;
   }
@@ -203,14 +390,105 @@ a {
     padding: 80px 24px !important;
   }
 
+  /* === МОДАЛКИ ПРОЕКТОВ — МОБИЛЬНАЯ АДАПТАЦИЯ === */
+  .modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
   .modal-content {
-    padding: 24px !important;
-    width: 90% !important;
-    max-height: 80vh !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 90vh !important;
+    padding: 24px 20px 32px !important;
+    border-radius: 24px 24px 0 0 !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-close {
+    top: 16px !important;
+    right: 16px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(45, 42, 38, 0.08) !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px !important;
+  }
+
+  .modal-accent {
+    width: 40px !important;
+    height: 4px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .modal-title {
+    font-size: 28px !important;
+    margin-bottom: 8px !important;
+    padding-right: 48px;
+  }
+
+  .modal-subtitle {
+    font-size: 16px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .modal-description {
+    font-size: 15px !important;
+    margin-bottom: 24px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Галерея — горизонтальная карусель на мобильном */
+  .modal-gallery {
+    margin-bottom: 20px !important;
+  }
+
+  .gallery-label {
+    font-size: 11px !important;
+    margin-bottom: 12px !important;
   }
 
   .gallery-grid {
-    grid-template-columns: 1fr !important;
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 10px !important;
+    padding-bottom: 8px !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .gallery-item {
+    min-width: 85% !important;
+    width: 85% !important;
+    height: 180px !important;
+    aspect-ratio: unset !important;
+    flex-shrink: 0 !important;
+    scroll-snap-align: start !important;
+  }
+
+  .modal-link {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px !important;
+    font-size: 15px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .modal-tags {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .modal-tag {
+    font-size: 11px !important;
+    padding: 6px 12px !important;
   }
 }
 
